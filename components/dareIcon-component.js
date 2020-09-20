@@ -2,31 +2,43 @@ import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { NavigationContainer, useNavigation} from '@react-navigation/native';
 import { createStackNavigator, HeaderStyleInterpolators } from '@react-navigation/stack';
+import { SharedElement } from 'react-navigation-shared-element';
 import { StyleSheet, Text, Dimensions, TouchableHighlight, View } from 'react-native';
 
 
 export default function DareIcon(props) {
     const navigation = useNavigation();
+
+    //props should have 
+    //  date = {month, day}, location=String(""), time=String("xx:xx xm"), member = []
     return(
         <TouchableHighlight style={props.side == 'left' ? styles.blockLeft : styles.blockRight}
             activeOpacity={0.6}
             underlayColor="#DDDDDD"
-            onPress={() => navigation.navigate('DareView')}
+            onPress={() => navigation.navigate('DareView', {props})}
             onLongPress={() => alert(Math.round(Dimensions.get('window').height))}>
             <View style={styles.block}>
                 <View style={styles.date}>
-                    <Text style={styles.month}>JAN</Text>
-                    <Text style={styles.day}>17</Text>
-                </View>
-                <View style={{zIndex: 1,}}>
-                    <Text style={styles.title}>병점 중심상가</Text>
-                    <Text style={styles.time}>03:00 AM</Text>
-                </View>
+                <SharedElement id={props.id+"month"}>
+                        <Text style={styles.month}>{props.Dare.date.month}</Text>
+                </SharedElement>
+                <SharedElement id={props.id+"day"}>
+                        <Text style={styles.day}>{props.Dare.date.day}</Text>
+                </SharedElement>
+                </View> 
+            <View style={{zIndex: 1,}}>
+                <SharedElement id={props.id+"location"}>
+                    <Text style={styles.title}>{props.Dare.location}</Text>
+                </SharedElement>
+                <SharedElement id={props.id+"time"}>
+                    <Text style={styles.time}>{props.Dare.time}</Text>
+                </SharedElement>
+            </View>
                 <View style={{zIndex: 1, flexDirection: 'row', alignItems: "center",}}>
                     <View style={styles.party}>
-                        <Text style={styles.person}>태규</Text>
+                        <Text style={styles.person}>{props.Dare.member[0]}</Text>
                     </View>
-                    <Text style={{color: 'white', fontSize: 25, fontWeight: '500', marginLeft: '5%', marginBottom: '2%'}}>+3</Text>
+                    <Text style={{color: 'white', fontSize: 25, fontWeight: '500', marginLeft: '5%', marginBottom: '2%'}}>+{props.Dare.member.length-1}</Text>
                 </View>
                 {props.isStarted ? <><View style={{zIndex: 0, position: 'absolute', left: '40%', right: 0, bottom: -40,}}><Text style={{opacity: .2, color: 'rgb(145, 168, 209)', fontSize: 200, fontStyle: "italic"}}>6</Text>
                 </View></> : null}
@@ -66,8 +78,6 @@ const styles = StyleSheet.create({
     },
     date: {
         zIndex: 1,
-        
-
     },
     month: {
         fontSize: 20,

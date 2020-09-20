@@ -4,6 +4,9 @@ import HomeScreen from "./components/homeScreen-component";
 import DareViewScreen from "./components/dareViewScreen-component";
 import CreateDareScreen from "./components/createDareScreen-component";
 import UserInfoScreen from "./components/userInfoScreen";
+import StartingScreen from "./components/startingScreen-component";
+
+import { createSharedElementStackNavigator } from 'react-navigation-shared-element';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator, HeaderStyleInterpolators } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -11,7 +14,7 @@ import { StyleSheet, ScrollView, TouchableHighlight, Text, View } from 'react-na
 import Home from './components/homeScreen-component';
 import { AntDesign, FontAwesome } from '@expo/vector-icons';
 
-const HomeStack = createStackNavigator();
+const HomeStack = createSharedElementStackNavigator();
 const RootStack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -25,9 +28,20 @@ function HomeStackScreen() {
           }}></HomeStack.Screen>
         <HomeStack.Screen name="DareView"
           component={DareViewScreen}
-          options={{
-            headerShown: false,
-          }}></HomeStack.Screen>
+          options={() => ({
+            gestureEnabled: false,
+            transitionSpec: {
+              open: { animation: 'timing', config: { duration: 500 }},
+              close: { animation: 'timing', config:{ duration: 1000 }},
+            },
+            cardStyleInterpolator: ({ current: { progress } }) => {
+              return {
+                cardStyle: {
+                  opacity: progress,
+                },
+              };
+            },
+          })}></HomeStack.Screen>
       </HomeStack.Navigator>
   )
 }
@@ -69,7 +83,7 @@ function TabNavigation() {
                   e.preventDefault();
                   navigation.navigate('CreateDareScreen')
                 },})} name="Create" component={CreateDareScreen}></Tab.Screen>
-      <Tab.Screen name="User" component={UserInfoScreen}></Tab.Screen>
+      <Tab.Screen name="User" component={StartingScreen}></Tab.Screen>
     </Tab.Navigator>
   )
 }

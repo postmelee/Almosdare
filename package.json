@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@expo-google-fonts/pt-sans-narrow": "^0.1.0",
+    "@react-native-community/datetimepicker": "2.4.0",
     "@react-native-community/masked-view": "0.1.10",
     "@react-navigation/bottom-tabs": "^5.8.0",
     "@react-navigation/native": "^5.7.3",
@@ -23,8 +24,9 @@
     "react-native-reanimated": "~1.9.0",
     "react-native-safe-area-context": "~3.0.7",
     "react-native-screens": "~2.9.0",
+    "react-native-shared-element": "0.7.0",
     "react-native-web": "~0.11.7",
-    "@react-native-community/datetimepicker": "2.4.0"
+    "react-navigation-shared-element": "^5.0.0-alpha1"
   },
   "devDependencies": {
     "@babel/core": "^7.8.6",
