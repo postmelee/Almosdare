@@ -8,7 +8,6 @@ import { StyleSheet, Text, Dimensions, TouchableHighlight, View } from 'react-na
 
 export default function DareIcon(props) {
     const navigation = useNavigation();
-
     //props should have 
     //  date = {month, day}, location=String(""), time=String("xx:xx xm"), member = []
     return(
@@ -28,7 +27,7 @@ export default function DareIcon(props) {
                 </View> 
             <View style={{zIndex: 1,}}>
                 <SharedElement id={props.id+"location"}>
-                    <Text style={styles.title}>{props.Dare.location}</Text>
+                    <Text style={styles.location}>{props.Dare.location}</Text>
                 </SharedElement>
                 <SharedElement id={props.id+"time"}>
                     <Text style={styles.time}>{props.Dare.time}</Text>
@@ -80,16 +79,18 @@ const styles = StyleSheet.create({
         zIndex: 1,
     },
     month: {
+        
         fontSize: 20,
         fontWeight: "500",
         color: 'rgb(145, 168, 209)'
     },
     day: {
+        
         fontSize: 28,
         fontWeight: "600",
         color: 'white'
     },
-    title: {
+    location: {
         fontSize: 17,
         fontWeight: "600",
         color: 'white'

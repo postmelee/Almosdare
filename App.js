@@ -29,10 +29,11 @@ function HomeStackScreen() {
         <HomeStack.Screen name="DareView"
           component={DareViewScreen}
           options={() => ({
-            gestureEnabled: false,
+            
+            headerShown: false,
             transitionSpec: {
-              open: { animation: 'timing', config: { duration: 500 }},
-              close: { animation: 'timing', config:{ duration: 1000 }},
+              open: { animation: 'timing', config: { duration: 150 }},
+              close: { animation: 'timing', config:{ duration: 0 }},
             },
             cardStyleInterpolator: ({ current: { progress } }) => {
               return {
@@ -90,9 +91,6 @@ function TabNavigation() {
 export default function App() {
   return (
     <>
-    <StatusBar
-     backgroundColor="blue"
-     barStyle="light-content"></StatusBar>
     <NavigationContainer>
       <RootStack.Navigator mode="modal" headerMode="none">
         <RootStack.Screen name="Main" component={TabNavigation}>

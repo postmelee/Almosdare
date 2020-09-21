@@ -17,17 +17,21 @@ function Navbar(props) {
   const rightButtonValue = useRef(new Animated.Value(-1)).current;
 
   let pages = ['First', 'Second', 'Third'];
-  Animated.timing(leftButtonValue, {
-    toValue: props.index,
-    duration: 500,
-    useNativeDriver: false,
-  }).start();
-  Animated.timing(rightButtonValue, {
-    toValue: props.index,
-    duration: 500,
-    useNativeDriver: false,
-  }).start();
-
+  
+  React.useEffect(() => {
+    Animated.timing(leftButtonValue, {
+      toValue: props.index,
+      duration: 500,
+      useNativeDriver: false,
+    }).start();
+    Animated.timing(rightButtonValue, {
+      toValue: props.index,
+      duration: 500,
+      useNativeDriver: false,
+    }).start();
+  
+  })
+  
   return(
     <View style={styles.navbar}>
               <TouchableWithoutFeedback onPress={() => {

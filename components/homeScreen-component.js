@@ -33,7 +33,6 @@ export default function Home() {
   }
   ]);
   return (
-    
     <View style={styles.container}>
       <Header scrollY={scrollY}></Header>
       
@@ -55,7 +54,7 @@ export default function Home() {
                 {dareList.length-1 == i ? <DareIcon key={"Icon"+i} id={i} side='left' Dare={dareList[i]}></DareIcon> : 
                 <>
                 <DareIcon key={"Icon"+i} id={i} side='left' Dare={dareList[i]}></DareIcon>
-                <DareIcon key={"Icon"+i+1} id={i} side='right' Dare={dareList[i+1]}></DareIcon>
+                <DareIcon key={"Icon"+i+1} id={i+1} side='right' Dare={dareList[i+1]}></DareIcon>
                 </>}
               </View>
             )
@@ -63,6 +62,7 @@ export default function Home() {
         })}
         
       </ScrollView>
+      <StatusBar style="dark"/>
     </View>
   );
 }
