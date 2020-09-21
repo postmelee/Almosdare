@@ -8,14 +8,14 @@ import { AntDesign } from '@expo/vector-icons';
 import CreateDareFirstScreen from './createDareFirstScreen-component';
 import CreateDareSecondScreen from './createDareSecondScreen-component';
 import CreateDareThirdScreen from './createDareThirdScreen-component';
+import { createSharedElementStackNavigator } from 'react-navigation-shared-element';
 
-const MainStack = createStackNavigator();
+const MainStack = createSharedElementStackNavigator();
 
 function Navbar(props) {
   const navigation = useNavigation();
   const leftButtonValue = useRef(new Animated.Value(-1)).current;
   const rightButtonValue = useRef(new Animated.Value(-1)).current;
-
   let pages = ['First', 'Second', 'Third'];
   
   React.useEffect(() => {
@@ -69,9 +69,34 @@ function Navbar(props) {
     </View>
   )
 }
+
+
 export default function CreateDareScreen() {
 
   const [index, setIndex] = useState(0);
+  const [dareData, setDareData] = useState(
+    {
+      date: new Date(),
+      location: "",
+      member: "",
+    }
+  );
+
+  function DareFirstScreenWrapper() {
+    return(
+      <CreateDareFirstScreen setDareData={setDareData} dareData={dareData}/>
+    )
+  }
+  function DareSecondScreenWrapper() {
+    return(
+      <CreateDareSecondScreen setDareData={setDareData} dareData={dareData}/>
+    )
+  }
+  function DareThirdScreenWrapper() {
+    return(
+      <CreateDareThirdScreen setDareData={setDareData} dareData={dareData}/>
+    )
+  }
 
   return(
     <View style={{flex: 1, backgroundColor: 'white'}}>
@@ -86,22 +111,26 @@ export default function CreateDareScreen() {
           }
         }}>
       <MainStack.Screen name="First"
-        component={CreateDareFirstScreen}
+        component={DareFirstScreenWrapper}
         options={{
           headerShown: false,
+          gestureEnabled: false,
         }}></MainStack.Screen>
       <MainStack.Screen name="Second"
-        component={CreateDareSecondScreen}
+        component={DareSecondScreenWrapper}
         options={{
           headerShown: false,
+          gestureEnabled: false,
         }}></MainStack.Screen>
       <MainStack.Screen name="Third"
-      component={CreateDareThirdScreen}
+      component={DareThirdScreenWrapper}
       options={{
         headerShown: false,
+        gestureEnabled: false,
       }}></MainStack.Screen>
     </MainStack.Navigator>
-    <Navbar index={index}></Navbar></View>
+    <Navbar index={index}></Navbar>
+    </View>
   )
 }
 

@@ -4,19 +4,21 @@ import { NavigationContainer, useNavigation} from '@react-navigation/native';
 import { StyleSheet, Dimensions, TouchableWithoutFeedback, Text, View } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { AntDesign } from '@expo/vector-icons';
+import { SharedElement } from 'react-navigation-shared-element';
 
 
-
-export default function CreateDareFirstScreen() {
+export default function CreateDareFirstScreen(props) {
     const navigation = useNavigation();
     const [date, setDate] = useState(new Date(1598051730000));
-    const [mode, setMode] = useState('date');
+    const [mode, setMode] = useState('datetime');
     const [show, setShow] = useState(false);
-  
     const onChange = (event, selectedDate) => {
       const currentDate = selectedDate || date;
       setShow(Platform.OS === 'ios');
       setDate(currentDate);
+      props.setDareData({
+        date: currentDate,
+      });
     };
   
     const showMode = (currentMode) => {
@@ -25,7 +27,7 @@ export default function CreateDareFirstScreen() {
     };
   
     const showDatepicker = () => {
-      showMode('date');
+      showMode('datetime');
     };
   
     const showTimepicker = () => {
@@ -33,22 +35,22 @@ export default function CreateDareFirstScreen() {
     };
     return (
       <View style={styles.container}>
-        <View style={styles.header}>
-          <View style={styles.headerBox}>
-            <Text style={styles.headerTitle}>
-              Create a Dare
-            </Text>
-          </View>
-        </View>
+        <View style={styles.header}></View>
         <View style={styles.body}>
-          <View style={styles.title}>
+        <View style={styles.title}>
             <Text style={styles.titleText}>
-              Step 1
-            </Text>
-            <Text style={styles.description}>
-              Choose a Date.
+            Step 1
             </Text>
           </View>
+          <View style={styles.title}>
+            <SharedElement id="date">
+            <Text style={styles.titleText}>
+            {props.dareData.date.toDateString()}
+            </Text>
+            </SharedElement>
+            
+          </View>
+          
           <View style={styles.picker}>
               <DateTimePicker
                 testID="dateTimePicker"
@@ -59,8 +61,8 @@ export default function CreateDareFirstScreen() {
                 onChange={onChange}
               />
           </View>
-        </View>
-        
+          
+          </View>
       </View>
     );
   }
@@ -72,15 +74,14 @@ export default function CreateDareFirstScreen() {
       },
       body: {
         flex: 1,
-        justifyContent: "space-between",
+        alignItems: 'center',
       },
       header: {
-        flex: 0.1,
+        height: '6%',
         backgroundColor: '#eee',
       },
       headerBox: {
         justifyContent: 'center',
-        marginTop: Math.round(Dimensions.get('window').height)/22,
         alignItems: 'center',
       },
       headerTitle: {
@@ -92,12 +93,18 @@ export default function CreateDareFirstScreen() {
         alignItems: 'center'
       },
       title: {
-        padding: 20,
+        paddingVertical: 5,
         width: '100%',
+        alignItems: 'center',
+        backgroundColor: "yellow",
+        margin: 10,
         
       },
       titleText: {
-        fontSize: 40,
+        fontSize: 35, 
+        fontWeight: "300",
+
+        
       },
       description: {
         fontSize: 25,
@@ -112,7 +119,9 @@ export default function CreateDareFirstScreen() {
         margin: '3%'
       },
       picker: {
-        marginBottom: '42%',
+        position: "absolute",
+        width: '100%',
+        top: Dimensions.get('window').height/3,
       }
 });
 
