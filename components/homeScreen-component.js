@@ -30,6 +30,13 @@ export default function Home() {
     location: "서울 롯데타워",
     time: "01:00 PM",
     member: ['태규', '현민', '준엽'],
+  },
+  {
+    id: 3,
+    date: {month: "DEC", day: "10"},
+    location: "경기도 화성시 서동탄로 11 205-1503",
+    time: "06:00 PM",
+    member: ['현민', '준엽'],
   }
   ]);
   return (
@@ -54,7 +61,7 @@ export default function Home() {
                 {dareList.length-1 == i ? <DareIcon key={"Icon"+i} id={i} side='left' Dare={dareList[i]}></DareIcon> : 
                 <>
                 <DareIcon key={"Icon"+i} id={i} side='left' Dare={dareList[i]}></DareIcon>
-                <DareIcon key={"Icon"+i+1} id={i+1} side='right' Dare={dareList[i+1]}></DareIcon>
+                  <DareIcon key={"Icon"+i+1} id={i+1} side='right' Dare={dareList[i+1]}></DareIcon>
                 </>}
               </View>
             )

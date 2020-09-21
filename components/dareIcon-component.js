@@ -11,6 +11,7 @@ export default function DareIcon(props) {
     //props should have 
     //  date = {month, day}, location=String(""), time=String("xx:xx xm"), member = []
     return(
+        
         <TouchableHighlight style={props.side == 'left' ? styles.blockLeft : styles.blockRight}
             activeOpacity={0.6}
             underlayColor="#DDDDDD"
@@ -18,20 +19,17 @@ export default function DareIcon(props) {
             onLongPress={() => alert(Math.round(Dimensions.get('window').height))}>
             <View style={styles.block}>
                 <View style={styles.date}>
-                <SharedElement id={props.id+"month"}>
-                        <Text style={styles.month}>{props.Dare.date.month}</Text>
-                </SharedElement>
-                <SharedElement id={props.id+"day"}>
-                        <Text style={styles.day}>{props.Dare.date.day}</Text>
-                </SharedElement>
-                </View> 
-            <View style={{zIndex: 1,}}>
-                <SharedElement id={props.id+"location"}>
-                    <Text style={styles.location}>{props.Dare.location}</Text>
-                </SharedElement>
-                <SharedElement id={props.id+"time"}>
-                    <Text style={styles.time}>{props.Dare.time}</Text>
-                </SharedElement>
+                    <SharedElement style={{}} id={props.id+"month"}>
+                            <Text style={styles.month}>{props.Dare.date.month} <Text style={styles.day}>{props.Dare.date.day}</Text></Text>
+                    </SharedElement>
+                </View>
+                <View style={{zIndex: 1,}}>
+                    <SharedElement id={props.id+"location"}>
+                        <Text numberOfLines={2} style={styles.location}>{props.Dare.location}</Text>
+                    </SharedElement>
+                    <SharedElement id={props.id+"time"}>
+                        <Text style={styles.time}>{props.Dare.time}</Text>
+                    </SharedElement>
             </View>
                 <View style={{zIndex: 1, flexDirection: 'row', alignItems: "center",}}>
                     <View style={styles.party}>
@@ -43,6 +41,7 @@ export default function DareIcon(props) {
                 </View></> : null}
             </View>
         </TouchableHighlight>
+    
     )
     
     
@@ -79,14 +78,14 @@ const styles = StyleSheet.create({
         zIndex: 1,
     },
     month: {
-        
-        fontSize: 20,
+
+        fontSize: 26,
         fontWeight: "500",
         color: 'rgb(145, 168, 209)'
     },
     day: {
         
-        fontSize: 28,
+        fontSize: 26,
         fontWeight: "600",
         color: 'white'
     },
@@ -96,7 +95,7 @@ const styles = StyleSheet.create({
         color: 'white'
     },
     time: {
-        fontSize: 15,
+        fontSize: 20,
         fontWeight: "400",
         color: 'gray'
     },

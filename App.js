@@ -32,7 +32,7 @@ function HomeStackScreen() {
             
             headerShown: false,
             transitionSpec: {
-              open: { animation: 'timing', config: { duration: 150 }},
+              open: { animation: 'timing', config: { duration: 300 }}, //150
               close: { animation: 'timing', config:{ duration: 0 }},
             },
             cardStyleInterpolator: ({ current: { progress } }) => {
@@ -92,10 +92,12 @@ export default function App() {
   return (
     <>
     <NavigationContainer>
-      <RootStack.Navigator mode="modal" headerMode="none">
+      <RootStack.Navigator mode="modal" headerMode="none" initialRouteName="Main">
         <RootStack.Screen name="Main" component={TabNavigation}>
         </RootStack.Screen>
         <RootStack.Screen name="CreateDareScreen" component={CreateDareScreen}>
+        </RootStack.Screen>
+        <RootStack.Screen name="StartingScreen" component={StartingScreen}>
         </RootStack.Screen>
       </RootStack.Navigator>
     </NavigationContainer>
