@@ -5,7 +5,7 @@ import DareViewScreen from "./components/dareViewScreen-component";
 import CreateDareScreen from "./components/createDareScreen-component";
 import UserInfoScreen from "./components/userInfoScreen";
 import StartingScreen from "./components/startingScreen-component";
-
+import InitialScreen from "./components/initialScreen-component"
 import { createSharedElementStackNavigator } from 'react-navigation-shared-element';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator, HeaderStyleInterpolators } from '@react-navigation/stack';
@@ -92,12 +92,14 @@ export default function App() {
   return (
     <>
     <NavigationContainer>
-      <RootStack.Navigator mode="modal" headerMode="none" initialRouteName="Main">
+      <RootStack.Navigator mode="modal" headerMode="none" initialRouteName="InitialScreen">
         <RootStack.Screen name="Main" component={TabNavigation}>
         </RootStack.Screen>
         <RootStack.Screen name="CreateDareScreen" component={CreateDareScreen}>
         </RootStack.Screen>
         <RootStack.Screen name="StartingScreen" component={StartingScreen}>
+        </RootStack.Screen>
+        <RootStack.Screen name="InitialScreen" component={InitialScreen}>
         </RootStack.Screen>
       </RootStack.Navigator>
     </NavigationContainer>

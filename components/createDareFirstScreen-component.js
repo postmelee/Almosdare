@@ -5,20 +5,26 @@ import { StyleSheet, Dimensions, TouchableWithoutFeedback, Text, View } from 're
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { AntDesign } from '@expo/vector-icons';
 import { SharedElement } from 'react-navigation-shared-element';
+import CreateDareNavbar from './createDareNavbar-component'
 
-
-export default function CreateDareFirstScreen(props) {
-    const navigation = useNavigation();
+export default function CreateDareFirstScreen({route}) {
     const [date, setDate] = useState(new Date(1598051730000));
     const [mode, setMode] = useState('datetime');
     const [show, setShow] = useState(false);
+    const [dareData, setDareData] = useState(
+      route.params ? route.params.dareData : {
+        date: new Date(),
+        location: "",
+        member: "",
+      }
+    );
     const onChange = (event, selectedDate) => {
       const currentDate = selectedDate || date;
       setShow(Platform.OS === 'ios');
       setDate(currentDate);
-      props.setDareData({
-        date: currentDate,
-      });
+      setDareData({
+        date: date,
+      })
     };
   
     const showMode = (currentMode) => {
@@ -38,14 +44,16 @@ export default function CreateDareFirstScreen(props) {
         <View style={styles.header}></View>
         <View style={styles.body}>
         <View style={styles.title}>
+        <SharedElement id="title">
             <Text style={styles.titleText}>
             Step 1
             </Text>
+          </SharedElement>
           </View>
           <View style={styles.title}>
             <SharedElement id="date">
             <Text style={styles.titleText}>
-            {props.dareData.date.toDateString()}
+            {dareData.date.toDateString()}
             </Text>
             </SharedElement>
             
@@ -63,8 +71,13 @@ export default function CreateDareFirstScreen(props) {
           </View>
           
           </View>
+        <CreateDareNavbar dareData={dareData} index={1} previous='home' next="Second"></CreateDareNavbar>
       </View>
     );
+  }
+
+  CreateDareFirstScreen.sharedElements = (route, otherRoute, showing) => {
+    return [{id: "date"}, {id: "title"}, {id: "buttonRight"}, {id: "buttonLeft"}]
   }
 
   const styles = StyleSheet.create({
@@ -78,7 +91,7 @@ export default function CreateDareFirstScreen(props) {
       },
       header: {
         height: '6%',
-        backgroundColor: '#eee',
+        backgroundColor: 'white',
       },
       headerBox: {
         justifyContent: 'center',
@@ -96,7 +109,6 @@ export default function CreateDareFirstScreen(props) {
         paddingVertical: 5,
         width: '100%',
         alignItems: 'center',
-        backgroundColor: "yellow",
         margin: 10,
         
       },

@@ -6,8 +6,10 @@ import { AntDesign } from '@expo/vector-icons';
 import MapView, {PROVIDER_GOOGLE, Marker, Callout} from 'react-native-maps';
 import { TabNavigator } from "react-navigation";
 import { SharedElement } from 'react-navigation-shared-element';
+import CreateDareNavbar from './createDareNavbar-component'
 
-export default function CreateDareSecondScreen(props) {
+export default function CreateDareSecondScreen({route}) {
+    const props = route.params.props;
     const navigation = useNavigation();
     const [search, setSearch] = useState('');
     const [latitude, setLatitude] = useState(null);
@@ -40,9 +42,11 @@ export default function CreateDareSecondScreen(props) {
         <View style={styles.header}></View>
         <View style={styles.body}>
           <View style={styles.title}>
+          <SharedElement id="title">
             <Text style={styles.titleText}>
               Step 2
             </Text>
+            </SharedElement>
           </View>
           <View style={styles.title}>
             <SharedElement id="date">
@@ -51,8 +55,13 @@ export default function CreateDareSecondScreen(props) {
             </Text>
             </SharedElement>
           </View>
-            
-        </View>
+          <View style={styles.title}>
+            <SharedElement id="location">
+              <Text style={styles.titleText}>
+              {props.dareData.date.toDateString()}
+            </Text>
+            </SharedElement>
+          </View>
           <View style={{flex: 1,}}>
             <MapView
               provider ={PROVIDER_GOOGLE}
@@ -92,9 +101,17 @@ export default function CreateDareSecondScreen(props) {
             </MapView>
             
           </View>
+        </View>
+          
+          <CreateDareNavbar dareData={props.dareData} index={2} previous="First" next="Third"></CreateDareNavbar>
       </View>
     )
   }
+
+  CreateDareSecondScreen.sharedElements = (route, otherRoute, showing) => {
+    return [{id: "date"}, {id: "title"}, {id: "buttonRight"}, {id: "buttonLeft"}]
+  }
+
   let {height, width} = Dimensions.get('window')
  
   const styles = StyleSheet.create({
@@ -103,7 +120,8 @@ export default function CreateDareSecondScreen(props) {
       width: width,
     },
     map: {
-      ...StyleSheet.absoluteFillObject,
+      height: height,
+      width: width,
     },
     container: {
         flex: 1,
@@ -115,7 +133,7 @@ export default function CreateDareSecondScreen(props) {
       },
       header: {
         height: '6%',
-        backgroundColor: '#eee',
+        backgroundColor: 'white',
       },
       headerBox: {
         justifyContent: 'center',
@@ -133,7 +151,6 @@ export default function CreateDareSecondScreen(props) {
         marginHorizontal: '5%'
       },
       title: {
-        backgroundColor: 'yellow',
         paddingVertical: 5,
         width: '100%',
         alignItems: 'center',

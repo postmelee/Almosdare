@@ -12,75 +12,10 @@ import { createSharedElementStackNavigator } from 'react-navigation-shared-eleme
 
 const MainStack = createSharedElementStackNavigator();
 
-function Navbar(props) {
-  const navigation = useNavigation();
-  const leftButtonValue = useRef(new Animated.Value(-1)).current;
-  const rightButtonValue = useRef(new Animated.Value(-1)).current;
-  let pages = ['First', 'Second', 'Third'];
-  
-  React.useEffect(() => {
-    Animated.timing(leftButtonValue, {
-      toValue: props.index,
-      duration: 500,
-      useNativeDriver: false,
-    }).start();
-    Animated.timing(rightButtonValue, {
-      toValue: props.index,
-      duration: 500,
-      useNativeDriver: false,
-    }).start();
-  
-  })
-  
-  return(
-    <View style={styles.navbar}>
-              <TouchableWithoutFeedback onPress={() => {
-                if(props.index === 0){
-                  navigation.goBack();
-                } else {
-                  navigation.navigate(pages[props.index-1]);
-                }
-                }}>
-                  <Animated.View style={{transform: [{rotate: leftButtonValue.interpolate({
-                      inputRange: [0, 1, 2],
-                      outputRange: ['-90deg', '0deg', '0deg'], 
-                    })}]}}>
-                    <AntDesign name="left" size={50} color="black" /> 
-                  </Animated.View>
-              </TouchableWithoutFeedback>
-              <Text>
-                  {props.index+1}/3
-              </Text>
-              <TouchableWithoutFeedback style={styles.button} onPress={() => {
-                if(props.index === 2){
-                  navigation.goBack();
-                } else {
-                  navigation.navigate(pages[props.index+1]);
-                }
-              }}>
-                <Animated.View style={{transform: [{rotate: rightButtonValue.interpolate({
-                  inputRange: [0, 1, 2],
-                  outputRange: ['0deg', '0deg', '90deg'], 
-                  })}]}}>
-                  <AntDesign name="right" size={50} color="black" /> 
-                </Animated.View>
-              </TouchableWithoutFeedback>
-            
-    </View>
-  )
-}
-
-
 export default function CreateDareScreen() {
 
   const [index, setIndex] = useState(0);
-  const [dareData, setDareData] = useState(
-    {
-      date: new Date(),
-      location: "",
-      member: "",
-    }
-  );
+  
 
   function DareFirstScreenWrapper() {
     return(
@@ -100,7 +35,7 @@ export default function CreateDareScreen() {
 
   return(
     <View style={{flex: 1, backgroundColor: 'white'}}>
-      <MainStack.Navigator initialRouteName="First"
+      <MainStack.Navigator mode="modal" initialRouteName="First"
         screenOptions={({ route }) => { 
           if(route.name === "First"){
             setIndex(0)
@@ -111,25 +46,23 @@ export default function CreateDareScreen() {
           }
         }}>
       <MainStack.Screen name="First"
-        component={DareFirstScreenWrapper}
+        component={CreateDareFirstScreen}
         options={{
           headerShown: false,
           gestureEnabled: false,
         }}></MainStack.Screen>
       <MainStack.Screen name="Second"
-        component={DareSecondScreenWrapper}
+        component={CreateDareSecondScreen}
         options={{
           headerShown: false,
-          gestureEnabled: false,
         }}></MainStack.Screen>
       <MainStack.Screen name="Third"
-      component={DareThirdScreenWrapper}
+      component={CreateDareThirdScreen}
       options={{
         headerShown: false,
         gestureEnabled: false,
       }}></MainStack.Screen>
     </MainStack.Navigator>
-    <Navbar index={index}></Navbar>
     </View>
   )
 }

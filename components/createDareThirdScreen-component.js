@@ -3,10 +3,11 @@ import React, {useState} from 'react';
 import { NavigationContainer, useNavigation} from '@react-navigation/native';
 import { StyleSheet, Dimensions, TouchableWithoutFeedback, Text, View } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
+import CreateDareNavbar from './createDareNavbar-component'
 
-
-export default function CreateDareThirdScreen() {
+export default function CreateDareThirdScreen({route}) {
     const navigation = useNavigation();
+    const props = route.params.props;
     return(
       <View style={styles.container}>
         <View style={styles.header}>
@@ -29,6 +30,7 @@ export default function CreateDareThirdScreen() {
           </View>
           
         </View>
+        <CreateDareNavbar dareData={props.dareData} index={3} previous="Second" next="home"></CreateDareNavbar>
       </View>
     )
   }
