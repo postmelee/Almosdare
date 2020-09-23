@@ -16,7 +16,7 @@ export default function CreateDareNavbar(props) {
         <View style={styles.navbar}>
               <TouchableWithoutFeedback onPress={() => { 
                   if(props.previous === 'home') navigation.goBack();
-                  else navigation.navigate(props.previous, {props});
+                  else navigation.navigate(props.previous);
                 }}>
                 <SharedElement id="buttonLeft">
                     <AntDesign style={
@@ -30,7 +30,7 @@ export default function CreateDareNavbar(props) {
               </Text>
               <TouchableWithoutFeedback onPress={() => {
                   if(props.next == 'home') navigation.navigate("Main");
-                  else navigation.navigate(props.next, {props});
+                  else navigation.navigate(props.next);
               }}>
                   <SharedElement id="buttonRight">
                     <AntDesign style={
@@ -43,10 +43,10 @@ export default function CreateDareNavbar(props) {
     </View>
     )
 }
-CreateDareNavbar.sharedElements = (route, otherRoute, showing) => {
-    return [{id: "date"}, {id: "title"}, {id: "buttonRight"}, {id: "buttonLeft"}]
-  }
 
+CreateDareNavbar.sharedElements = ((navigation, otherNavigation, showing) => {
+    return [{id: 'buttonLeft'}, {id: 'buttonRight'}]
+})
 
 
 const styles = StyleSheet.create({

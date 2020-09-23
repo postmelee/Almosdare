@@ -8,6 +8,44 @@ import SwiperComponent from './LoginView/SwiperComponent';
 const StackNavigator = createStackNavigator();
 
 export default function InitialScreen() {
+    const postSignUpToApi = async (signUpData) => {
+        return fetch('http://localhost:5000/api/users/signup', {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(signUpData)
+          })
+          .then((response) => response.json())
+          .then((json) => {
+            return json.result;
+          })
+          .catch((error) => {
+              console.log(error);
+              alert('Server Problem');
+          });
+    }
+
+    const postLoginToApi = async (loginData) => {
+        return fetch('http://localhost:5000/api/users/login', {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(loginData)
+          })
+          .then((response) => response.json())
+          .then((json) => {
+            return json.result;
+          })
+          .catch((error) => {
+              console.log(error);
+              alert('Server Problem');
+          });
+    }
+
     return(
             <StackNavigator.Navigator>
                 <StackNavigator.Screen
@@ -18,16 +56,20 @@ export default function InitialScreen() {
                     }}/>
                 <StackNavigator.Screen
                     name="LoginComponent"
-                    component={LoginComponent}
                     options={{
                         headerShown:false
-                    }}/>
+                    }
+                }>
+                    {props => <LoginComponent {...props} postLoginToApi={postLoginToApi} />}
+                </StackNavigator.Screen>
                 <StackNavigator.Screen
                     name="SignUpComponent"
-                    component={SignUpComponent}
                     options={{
                         headerShown:false
-                    }}/>
+                    }}
+                >
+                    {props => <SignUpComponent {...props} postSignUpToApi={postSignUpToApi} />}
+                </StackNavigator.Screen>
             </StackNavigator.Navigator>
     )
 };

@@ -8,11 +8,15 @@ import {
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
 export default class SignUpComponent extends React.Component{
     constructor(props){
         super(props);
         this.state={
             borderColor: null,
+            userNickname: null,
+            userId: null,
+            userPassword: null,
         }
     }
 
@@ -21,12 +25,51 @@ export default class SignUpComponent extends React.Component{
             borderColor: value
         })
     }
+
+    signUpAndNavigate(){
+        const nickname = this.state.userNickname;
+        const id = this.state.userId;
+        const password = this.state.userPassword;
+        const userData = {
+            nickname,
+            id,
+            password,
+        }
+
+        this.props.postSignUpToApi(userData)
+        .then((result) => {
+            if(result === 1) this.props.navigation.navigate('LoginComponent');
+        })
+    }
+
     render() {
         return(
             <View style={styles.container}>
                 <Text style={styles.title}>Sign Up</Text>
                 <Text style={styles.text}>Sign Up with E-mail and Password</Text>
                 <View style={styles.action}>
+                    <View style={[styles.section, {
+                        borderColor: this.state.borderColor=="nickname" ?
+                        '#3465d9' : 'gray'
+                    }]}>
+                        <AntDesign name="idcard" size={20} 
+                        color={this.state.borderColor=="nickname" ?
+                        '#3465d9' : 'gray'}/>
+                        <TextInput
+                            placeholder="Nickname"
+                            style={[styles.textInput, {
+                                borderColor: this.state.borderColor=="nickname" ?
+                                    '#3465d9' : 'gray'
+                            }]}
+                            onFocus={() => this.onFocus("nickname")}
+                            onChangeText={(text) => {
+                                this.setState({
+                                    userNickname: text,
+                                })
+                            }}
+                        >
+                        </TextInput>
+                    </View>
                     <View style={[styles.section, {
                         borderColor: this.state.borderColor=="email" ?
                         '#3465d9' : 'gray'
@@ -38,9 +81,15 @@ export default class SignUpComponent extends React.Component{
                             placeholder="E-mail"
                             style={[styles.textInput, {
                                 borderColor: this.state.borderColor=="email" ?
-                        '#3465d9' : 'gray'
+                                    '#3465d9' : 'gray'
                             }]}
-                            onFocus={() => this.onFocus("email")}>
+                            onFocus={() => this.onFocus("email")}
+                            onChangeText={(text) => {
+                                this.setState({
+                                    userId: text,
+                                })
+                            }}
+                        >
                         </TextInput>
                     </View>
                     <View style={[styles.section, {
@@ -57,16 +106,23 @@ export default class SignUpComponent extends React.Component{
                         '#3465d9' : 'gray'
                             }]}
                             onFocus={() => this.onFocus("password")}
+                            onChangeText={(text) => {
+                                this.setState({
+                                    userPassword: text,
+                                })
+                            }}
                             secureTextEntry>
                         </TextInput>
                     </View>
+                    
                 </View>
                 <TouchableOpacity>
                     <Text style={styles.forgot}>
                         Forgot password?
                     </Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.login}>
+                <TouchableOpacity style={styles.login}
+                    onPress={() => {this.signUpAndNavigate()}}>
                     <Text style={styles.textLogin}>Sign Up</Text>
                 </TouchableOpacity>
                 <View style={styles.signup}>

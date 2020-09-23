@@ -9,19 +9,40 @@ import {
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
 export default class LoginComponent extends React.Component{
+
     constructor(props){
         super(props);
         this.state={
             borderColor: null,
+            userId: null,
+            userPassword: null,
         }
+    
     }
-
+    
     onFocus(value){
         this.setState({
             borderColor: value
         })
     }
+
+    loginAndNavigate(){
+        const id = this.state.userId;
+        const password = this.state.userPassword;
+        const userData = {
+            id,
+            password,
+        }
+        this.props.postLoginToApi(userData)
+        .then((result) => {
+            if(result == -1) alert('Wrong Id or Password');
+            else if(result == 1) this.props.navigation.navigate('Main');
+        })
+    }
+
     render() {
+    
+    
         return(
             <View style={styles.container}>
                 <Text style={styles.title}>Login</Text>
@@ -40,7 +61,13 @@ export default class LoginComponent extends React.Component{
                                 borderColor: this.state.borderColor=="email" ?
                         '#3465d9' : 'gray'
                             }]}
-                            onFocus={() => this.onFocus("email")}>
+                            onFocus={() => this.onFocus("email")}
+                            onChangeText={(text) => {
+                                this.setState({
+                                    userId: text,
+                                })
+                            }}
+                        >
                         </TextInput>
                     </View>
                     <View style={[styles.section, {
@@ -57,6 +84,11 @@ export default class LoginComponent extends React.Component{
                         '#3465d9' : 'gray'
                             }]}
                             onFocus={() => this.onFocus("password")}
+                            onChangeText={(text) => {
+                                this.setState({
+                                    userPassword: text,
+                                })
+                            }}
                             secureTextEntry>
                         </TextInput>
                     </View>
@@ -67,8 +99,10 @@ export default class LoginComponent extends React.Component{
                     </Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.login}
-                onPress={() => {this.props.navigation.navigate('Main')}}>
-                    <Text style={styles.textLogin}>Login</Text>
+                    onPress={() => {this.loginAndNavigate()}}>
+                    <Text style={styles.textLogin}>
+                        Login
+                    </Text>
                 </TouchableOpacity>
                 <View style={styles.signup}>
                     <Text style={[styles.textSignup, {

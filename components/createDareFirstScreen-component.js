@@ -1,84 +1,91 @@
 import { StatusBar } from 'expo-status-bar';
-import React, {useState} from 'react';
+import React from 'react';
 import { NavigationContainer, useNavigation} from '@react-navigation/native';
-import { StyleSheet, Dimensions, TouchableWithoutFeedback, Text, View } from 'react-native';
+import { StyleSheet, Dimensions, TouchableWithoutFeedback, Text, View, Platform } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { AntDesign } from '@expo/vector-icons';
 import { SharedElement } from 'react-navigation-shared-element';
 import CreateDareNavbar from './createDareNavbar-component'
 
-export default function CreateDareFirstScreen({route}) {
-    const [date, setDate] = useState(new Date(1598051730000));
-    const [mode, setMode] = useState('datetime');
-    const [show, setShow] = useState(false);
-    const [dareData, setDareData] = useState(
-      route.params ? route.params.dareData : {
-        date: new Date(),
-        location: "",
-        member: "",
-      }
-    );
-    const onChange = (event, selectedDate) => {
-      const currentDate = selectedDate || date;
-      setShow(Platform.OS === 'ios');
-      setDate(currentDate);
-      setDareData({
-        date: date,
-      })
+export default class CreateDareFirstScreen extends React.Component{
+    constructor(props){
+        super(props);
+        this.state={
+          mode: 'datetime',
+          show: false,
+          
+
+        }
+    
+    }
+    
+    onChange = (event, selectedDate) => {
+      const currentDate = selectedDate || this.props.route.params.setNewDareDate(currentDate)
+      this.setState(
+        {
+          show: Platform.OS === 'ios',
+        }
+      )
+      this.props.route.params.setNewDareDate(currentDate)
     };
   
-    const showMode = (currentMode) => {
-      setShow(true);
-      setMode(currentMode);
+    showMode = (currentMode) => {
+
+      this.setState(
+        {
+        mode: currentMode,
+        show: true,
+        } 
+      )
     };
   
-    const showDatepicker = () => {
-      showMode('datetime');
+    showDatepicker = () => {
+      this.showMode('datetime');
     };
   
-    const showTimepicker = () => {
-      showMode('time');
+    showTimepicker = () => {
+      this.showMode('time');
     };
-    return (
-      <View style={styles.container}>
-        <View style={styles.header}></View>
-        <View style={styles.body}>
-        <View style={styles.title}>
-        <SharedElement id="title">
-            <Text style={styles.titleText}>
-            Step 1
-            </Text>
-          </SharedElement>
-          </View>
+
+    render() {
+      return(
+        <View style={styles.container}>
+          <View style={styles.header}></View>
+          <View style={styles.body}>
           <View style={styles.title}>
-            <SharedElement id="date">
-            <Text style={styles.titleText}>
-            {dareData.date.toDateString()}
-            </Text>
+          <SharedElement id="title">
+              <Text style={styles.titleText}>
+              Step 1
+              </Text>
             </SharedElement>
+            </View>
+            <View style={styles.title}>
+              <SharedElement id="date">
+              <Text style={styles.titleText}>
+                {this.props.route.params.getDareData().date.toDateString()}
+              </Text>
+              </SharedElement>
+              
+            </View>
             
-          </View>
-          
-          <View style={styles.picker}>
-              <DateTimePicker
-                testID="dateTimePicker"
-                value={date}
-                mode={mode}
-                is24Hour={true}
-                display="default"
-                onChange={onChange}
-              />
-          </View>
-          
-          </View>
-        <CreateDareNavbar dareData={dareData} index={1} previous='home' next="Second"></CreateDareNavbar>
-      </View>
-    );
+            <View style={styles.picker}>
+                <DateTimePicker
+                  testID="dateTimePicker"
+                  value={this.props.route.params.getDareData().date}
+                  mode={this.state.mode}
+                  is24Hour={true}
+                  display="default"
+                  onChange={this.onChange}
+                />
+            </View>
+            
+            </View>
+          <CreateDareNavbar index={1} previous='home' next="Second"></CreateDareNavbar>
+        </View>
+      );
+    }
   }
 
-  CreateDareFirstScreen.sharedElements = (route, otherRoute, showing) => {
-    return [{id: "date"}, {id: "title"}, {id: "buttonRight"}, {id: "buttonLeft"}]
-  }
 
   const styles = StyleSheet.create({
     container: {
