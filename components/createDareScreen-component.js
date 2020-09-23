@@ -82,7 +82,11 @@ export default class CreateDareScreen extends React.Component{
         options={{
           headerShown: false,
           gestureEnabled: false,
-        }}></MainStack.Screen>
+        }}
+        initialParams={{
+          getDareData: this.getDareData,
+          setNewDareLocation: this.setNewDareLocation,
+        }} ></MainStack.Screen>
       </MainStack.Navigator>
       </View>
     )

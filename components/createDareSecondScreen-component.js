@@ -7,6 +7,7 @@ import MapView, {PROVIDER_GOOGLE, Marker, Callout} from 'react-native-maps';
 import { TabNavigator } from "react-navigation";
 import { SharedElement } from 'react-navigation-shared-element';
 import CreateDareNavbar from './createDareNavbar-component'
+import { createSharedElementStackNavigator } from 'react-navigation-shared-element';
 
 export default class CreateDareSecondScreen extends React.Component{
   constructor(props){
@@ -16,8 +17,14 @@ export default class CreateDareSecondScreen extends React.Component{
 
     }
   }
+
   static sharedElements = (navigation, otherNavigation, showing) => {
-    return [{id: 'title'}, {id: 'date'}, {id: 'location'}, {id: 'buttonLeft'}, {id: 'buttonRight'}]
+    
+    if(navigation.name === 'Second' && otherNavigation.name === 'Third'){
+      return [{id: 'title'}, {id: 'location'}, {id: 'date'}, {id: 'buttonLeft'}, {id: 'buttonRight'}]
+    } else if(navigation.name === 'Second' && otherNavigation.name === 'First'){
+      return [{id: 'title'}, {id: 'date'}, {id: 'buttonLeft'}, {id: 'buttonRight'}]
+    }
   }
   render() {
    

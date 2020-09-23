@@ -44,9 +44,7 @@ export default function CreateDareNavbar(props) {
     )
 }
 
-CreateDareNavbar.sharedElements = ((navigation, otherNavigation, showing) => {
-    return [{id: 'buttonLeft'}, {id: 'buttonRight'}]
-})
+
 
 
 const styles = StyleSheet.create({
