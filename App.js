@@ -5,7 +5,8 @@ import DareViewScreen from "./components/dareViewScreen-component";
 import CreateDareScreen from "./components/createDareScreen-component";
 import UserInfoScreen from "./components/userInfoScreen";
 import StartingScreen from "./components/startingScreen-component";
-import InitialScreen from "./components/initialScreen-component"
+import InitialScreen from "./components/initialScreen-component";
+import LocationView from "./components/locationView-component";
 import { createSharedElementStackNavigator } from 'react-navigation-shared-element';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator, HeaderStyleInterpolators } from '@react-navigation/stack';
@@ -13,6 +14,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StyleSheet, ScrollView, TouchableHighlight, Text, View } from 'react-native';
 import Home from './components/homeScreen-component';
 import { AntDesign, FontAwesome } from '@expo/vector-icons';
+
 
 const HomeStack = createSharedElementStackNavigator();
 const RootStack = createStackNavigator();
@@ -84,7 +86,7 @@ function TabNavigation() {
                   e.preventDefault();
                   navigation.navigate('CreateDareScreen')
                 },})} name="Create" component={CreateDareScreen}></Tab.Screen>
-      <Tab.Screen name="User" component={StartingScreen}></Tab.Screen>
+      <Tab.Screen name="User" component={LocationView}></Tab.Screen>
     </Tab.Navigator>
   )
 }
@@ -101,6 +103,7 @@ export default function App() {
         </RootStack.Screen>
         <RootStack.Screen name="InitialScreen" component={InitialScreen}>
         </RootStack.Screen>
+        
       </RootStack.Navigator>
     </NavigationContainer>
     </>

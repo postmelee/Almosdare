@@ -31,7 +31,11 @@
         "uber",
         "lyft",
         "waze"
+        ]
+      },
+      "UIBackgroundModes": [
+        "location",
+        "fetch"
       ]
     }
   }
-}
