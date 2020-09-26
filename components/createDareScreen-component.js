@@ -5,6 +5,9 @@ import { NavigationContainer, useNavigation} from '@react-navigation/native';
 import { StyleSheet, Animated, Dimensions, TouchableWithoutFeedback, TouchableHighlight, Text, View } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { AntDesign } from '@expo/vector-icons';
+import * as Location from 'expo-location';
+import * as Permissions from 'expo-permissions';
+import MapView, {PROVIDER_GOOGLE, Marker, Callout} from 'react-native-maps';
 import CreateDareFirstScreen from './createDareFirstScreen-component';
 import CreateDareSecondScreen from './createDareSecondScreen-component';
 import CreateDareThirdScreen from './createDareThirdScreen-component';
@@ -20,12 +23,16 @@ export default class CreateDareScreen extends React.Component{
     this.state={
       date: new Date(),
       location: null,
+      
+
     }
     this.getDareData = this.getDareData.bind(this);
     this.setNewDareDate = this.setNewDareDate.bind(this);
     this.setNewDareLocation = this.setNewDareLocation.bind(this);
 
 }
+
+
   getDareData = () => {
     return ({
       date: this.state.date,
@@ -88,6 +95,7 @@ export default class CreateDareScreen extends React.Component{
           setNewDareLocation: this.setNewDareLocation,
         }} ></MainStack.Screen>
       </MainStack.Navigator>
+      
       </View>
     )
       
