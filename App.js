@@ -94,7 +94,7 @@ export default function App() {
   return (
     <>
     <NavigationContainer>
-      <RootStack.Navigator mode="modal" headerMode="none" initialRouteName="Main">
+      <RootStack.Navigator mode="modal" headerMode="none" initialRouteName="InitialScreen">
         <RootStack.Screen name="Main" component={TabNavigation}>
         </RootStack.Screen>
         <RootStack.Screen name="CreateDareScreen" component={CreateDareScreen}>

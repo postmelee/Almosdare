@@ -35,6 +35,7 @@ export default class LoginComponent extends React.Component{
         }
         this.props.postLoginToApi(userData)
         .then((result) => {
+            alert(result);
             if(result == -1) alert('Wrong Id or Password');
             else if(result == 1) this.props.navigation.navigate('Main');
         })

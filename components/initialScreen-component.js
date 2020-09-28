@@ -9,7 +9,7 @@ const StackNavigator = createStackNavigator();
 
 export default function InitialScreen() {
     const postSignUpToApi = async (signUpData) => {
-        return fetch('http://localhost:5000/api/users/signup', {
+        return fetch('https://almosdare.herokuapp.com/api/users/signup', {
             method: 'POST',
             headers: {
               Accept: 'application/json',
@@ -28,7 +28,7 @@ export default function InitialScreen() {
     }
 
     const postLoginToApi = async (loginData) => {
-        return fetch('http://localhost:5000/api/users/login', {
+        return fetch('https://almosdare.herokuapp.com/api/users/login', {
             method: 'POST',
             headers: {
               Accept: 'application/json',

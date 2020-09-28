@@ -19,6 +19,8 @@ export default class CreateDareFirstScreen extends React.Component{
     
     }
     
+
+
     onChange = (event, selectedDate) => {
       const currentDate = selectedDate || this.props.route.params.setNewDareDate(currentDate)
       this.setState(
@@ -61,7 +63,7 @@ export default class CreateDareFirstScreen extends React.Component{
             </View>
             <View style={styles.title}>
               <SharedElement id="date">
-              <Text style={styles.titleText}>
+              <Text style={styles.titleTextFocus}>
                 {this.props.route.params.getDareData().date.toDateString()}
               </Text>
               </SharedElement>
@@ -120,10 +122,12 @@ export default class CreateDareFirstScreen extends React.Component{
         
       },
       titleText: {
+        fontSize: 25, 
+        fontWeight: "300",
+      },
+      titleTextFocus: {
         fontSize: 35, 
         fontWeight: "300",
-
-        
       },
       description: {
         fontSize: 25,

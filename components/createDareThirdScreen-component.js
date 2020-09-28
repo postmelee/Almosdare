@@ -38,8 +38,8 @@ export default class CreateDareThirdScreen extends React.Component{
           </View>
           <View style={styles.title}>
             <SharedElement id="location">
-              <Text style={styles.titleText}>
-                Location
+              <Text numberOfLines={2} style={[styles.titleText, {textAlign: 'center', width: width-30}]}>
+              {this.props.route.params.getDareData().location}
             </Text>
             </SharedElement>
           </View>
@@ -102,9 +102,10 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       margin: 10,
       
+      
     },
     titleText: {
-      fontSize: 35, 
+      fontSize: 25, 
       fontWeight: "300"
       
     },
