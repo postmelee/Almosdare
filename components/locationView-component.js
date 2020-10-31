@@ -6,7 +6,7 @@ import * as TaskManager from 'expo-task-manager';
 import socketIO from 'socket.io-client';
 
 const LOCATION_TASK_NAME = 'background-location-task';
-const socket = socketIO.connect('http://localhost:5000');
+const socket = socketIO.connect('https://almosdare.herokuapp.com');
 const getUsers = async () => {
     let token = await AsyncStorage.getItem("userToken")
     return fetch('https://almosdare.herokuapp.com/api/users', { 
