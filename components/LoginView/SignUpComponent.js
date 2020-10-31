@@ -71,19 +71,19 @@ export default class SignUpComponent extends React.Component{
                         </TextInput>
                     </View>
                     <View style={[styles.section, {
-                        borderColor: this.state.borderColor=="email" ?
+                        borderColor: this.state.borderColor=="phone" ?
                         '#3465d9' : 'gray'
                     }]}>
-                        <MaterialCommunityIcons name="email-outline" size={20} 
-                        color={this.state.borderColor=="email" ?
+                        <Feather name="phone" size={20} 
+                        color={this.state.borderColor=="phone" ?
                         '#3465d9' : 'gray'}/>
                         <TextInput
-                            placeholder="E-mail"
+                            placeholder="Phone Number"
                             style={[styles.textInput, {
-                                borderColor: this.state.borderColor=="email" ?
+                                borderColor: this.state.borderColor=="phone" ?
                                     '#3465d9' : 'gray'
                             }]}
-                            onFocus={() => this.onFocus("email")}
+                            onFocus={() => this.onFocus("phone")}
                             onChangeText={(text) => {
                                 this.setState({
                                     userId: text,

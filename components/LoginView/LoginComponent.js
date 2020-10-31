@@ -4,7 +4,8 @@ import {
     Text, 
     StyleSheet,
     TextInput,
-    TouchableOpacity
+    TouchableOpacity,
+    AsyncStorage
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
@@ -17,9 +18,35 @@ export default class LoginComponent extends React.Component{
             userId: null,
             userPassword: null,
         }
+        this.storeToken = this.storeToken.bind(this);
+        this.getToken = this.getToken.bind(this);
     
     }
     
+    async storeToken (token, tokenType) {
+        AsyncStorage.setItem("userToken", tokenType+" "+token)
+        .then(() => {
+            alert('token stored successfully!');
+               console.log('store success');
+        })
+        .catch((error) => {
+            alert("Something went wrong");
+          console.log("Something went wrong", error);
+        })
+      }
+
+    async getToken () {
+        let token = await AsyncStorage.getItem("userToken")
+        .then((token) => {
+            let data = JSON.parse(token);
+            console.log(data);
+            return data;
+        })
+        .catch((error) => {
+          console.log("Something went wrong", error);
+        })
+    }
+
     onFocus(value){
         this.setState({
             borderColor: value
@@ -34,10 +61,12 @@ export default class LoginComponent extends React.Component{
             password,
         }
         this.props.postLoginToApi(userData)
-        .then((result) => {
-            alert(result);
-            if(result == -1) alert('Wrong Id or Password');
-            else if(result == 1) this.props.navigation.navigate('Main');
+        .then((json) => {
+            if(json.result == -1) alert('Wrong Id or Password');
+            else if(json.result == 1) {
+                this.storeToken(json.accessToken, json.tokenType)
+                this.props.navigation.navigate('Main');
+            }
         })
     }
 

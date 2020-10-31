@@ -7,7 +7,11 @@ import SwiperComponent from './LoginView/SwiperComponent';
 
 const StackNavigator = createStackNavigator();
 
+
 export default function InitialScreen() {
+
+
+        
     const postSignUpToApi = async (signUpData) => {
         return fetch('https://almosdare.herokuapp.com/api/users/signup', {
             method: 'POST',
@@ -37,8 +41,8 @@ export default function InitialScreen() {
             body: JSON.stringify(loginData)
           })
           .then((response) => response.json())
-          .then((json) => {
-            return json.result;
+              .then((json) => {
+                    return json;
           })
           .catch((error) => {
               console.log(error);

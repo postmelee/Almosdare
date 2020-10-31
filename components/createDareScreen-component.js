@@ -8,6 +8,7 @@ import { AntDesign } from '@expo/vector-icons';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 import MapView, {PROVIDER_GOOGLE, Marker, Callout} from 'react-native-maps';
+import CreateDareStartScreen from './createDareStartScreen-component';
 import CreateDareFirstScreen from './createDareFirstScreen-component';
 import CreateDareSecondScreen from './createDareSecondScreen-component';
 import CreateDareThirdScreen from './createDareThirdScreen-component';
@@ -21,12 +22,12 @@ export default class CreateDareScreen extends React.Component{
   constructor(props){
     super(props);
     this.state={
+      members: null,
       date: new Date(),
       location: null,
-      
-
     }
     this.getDareData = this.getDareData.bind(this);
+    this.setNewDareMembers = this.setNewDareMembers(this);
     this.setNewDareDate = this.setNewDareDate.bind(this);
     this.setNewDareLocation = this.setNewDareLocation.bind(this);
 
@@ -35,10 +36,19 @@ export default class CreateDareScreen extends React.Component{
 
   getDareData = () => {
     return ({
+      member: this.state.member,
       date: this.state.date,
       location: this.state.location,
   })
 }
+
+  setNewDareMembers = (members) => {
+    this.setState(
+      {
+        members: members,
+      }
+    )
+  }
 
   setNewDareDate = (date) => {
     this.setState(
@@ -60,7 +70,19 @@ export default class CreateDareScreen extends React.Component{
   render() {
     return(
       <View style={{flex: 1, backgroundColor: 'white'}}>
-        <MainStack.Navigator mode="modal" initialRouteName="First">
+        <MainStack.Navigator mode="modal" initialRouteName="Start">
+        <MainStack.Screen name="Start"
+          component={CreateDareStartScreen}
+          options={{
+            headerShown: false,
+            gestureEnabled: false,
+          }}
+          initialParams={{
+            getDareData: this.getDareData,
+            setNewDareMembers: this.setNewDareMembers,
+          }} >
+            
+          </MainStack.Screen>
         <MainStack.Screen name="First"
           component={CreateDareFirstScreen}
           options={{

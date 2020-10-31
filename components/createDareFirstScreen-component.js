@@ -82,7 +82,7 @@ export default class CreateDareFirstScreen extends React.Component{
             </View>
             
             </View>
-          <CreateDareNavbar index={1} previous='home' next="Second"></CreateDareNavbar>
+          <CreateDareNavbar index={1} previous='Start' next="Second"></CreateDareNavbar>
         </View>
       );
     }
