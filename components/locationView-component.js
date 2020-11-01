@@ -19,7 +19,7 @@ const getUsers = async () => {
       .then((response) => response.json())
       .then((json) => {
           
-        if(json.result){    
+        if(json.result === 1){    
             return json.nickname;
         }
         else{

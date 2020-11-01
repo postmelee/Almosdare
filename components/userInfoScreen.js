@@ -39,7 +39,7 @@ export default class UserInfoScreen extends React.Component{
         })
         .then((response) => response.json())
         .then((json) => {
-          if(json.result) {
+          if(json.result === 1) {
             alert(json.nickname)
             return json.nickname;
           }
@@ -68,7 +68,7 @@ export default class UserInfoScreen extends React.Component{
       })
       .then((response) => response.json())
       .then(async (json) => {
-        if(json.result) {
+        if(json.result === 1) {
           this.setState({
             pendingInstants: await Promise.all(json.data.map((instant, i) => {
               return this.getMemberIdByInstant(instant)

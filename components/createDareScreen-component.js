@@ -18,7 +18,7 @@ import { SharedElement } from 'react-navigation-shared-element';
 const MainStack = createSharedElementStackNavigator();
 
 export default class CreateDareScreen extends React.Component{
-
+  
   constructor(props){
     super(props);
     this.state={
@@ -80,6 +80,7 @@ export default class CreateDareScreen extends React.Component{
           initialParams={{
             getDareData: this.getDareData,
             setNewDareMembers: this.setNewDareMembers,
+            navigation: this.props.navigation,
           }} >
             
           </MainStack.Screen>
