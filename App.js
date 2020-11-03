@@ -8,7 +8,7 @@ import StartingScreen from "./components/startingScreen-component";
 import InitialScreen from "./components/initialScreen-component";
 import LocationView from "./components/locationView-component";
 import { createSharedElementStackNavigator } from 'react-navigation-shared-element';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createStackNavigator, HeaderStyleInterpolators } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StyleSheet, ScrollView, TouchableHighlight, Text, View } from 'react-native';
@@ -86,7 +86,7 @@ function TabNavigation() {
                   e.preventDefault();
                   navigation.navigate('CreateDareScreen')
                 },})} name="Create" component={CreateDareScreen}></Tab.Screen>
-      <Tab.Screen name="User" component={LocationView}></Tab.Screen>
+      <Tab.Screen name="User" component={UserInfoScreen}></Tab.Screen>
     </Tab.Navigator>
   )
 }

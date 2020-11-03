@@ -40,7 +40,7 @@ export default class CreateDareFirstScreen extends React.Component{
               "id": "01012345678",
               "nickname": "test"
               },
-            ]
+            ]  
         }
     
       }
@@ -48,8 +48,8 @@ export default class CreateDareFirstScreen extends React.Component{
     getUsers = async () => {
       let token = await AsyncStorage.getItem("userToken")
       return fetch('https://almosdare.herokuapp.com/api/users', { 
-          method: 'GET', 
-          headers: new Headers({
+        method: 'GET', 
+        headers: new Headers({
             'Authorization': token,
             'Content-Type': 'application/x-www-form-urlencoded'
           }), 
@@ -93,9 +93,9 @@ export default class CreateDareFirstScreen extends React.Component{
     }
     
     addMember(newMember) {
+      
       const arr = this.state.members;
-      const index = arr.indexOf(newMember);
-      if (index > -1) {
+      if (arr.some(e => e.idx === newMember.idx)) {
         alert('This User is in members')
         return -1
       }
@@ -181,13 +181,13 @@ export default class CreateDareFirstScreen extends React.Component{
             method: 'GET',
             headers: new Headers({
               'Authorization': token,
-              'Content-Type': 'application/x-www-form-urlencoded'
+              'Content-Type': 'application/json'
             }), 
           })
           .then((response) => response.json())
           .then((json) => {
             //alert(JSON.stringify(json))
-            if(json.result) {
+            if(json.result === 1) {
                 this.setModalVisible(true)
                 this.setState({ 
                     queryResult: json,

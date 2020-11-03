@@ -27,7 +27,7 @@ export default class CreateDareScreen extends React.Component{
       location: null,
     }
     this.getDareData = this.getDareData.bind(this);
-    this.setNewDareMembers = this.setNewDareMembers(this);
+    this.setNewDareMembers = this.setNewDareMembers.bind(this);
     this.setNewDareDate = this.setNewDareDate.bind(this);
     this.setNewDareLocation = this.setNewDareLocation.bind(this);
 

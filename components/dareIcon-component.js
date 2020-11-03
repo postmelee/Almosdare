@@ -4,7 +4,7 @@ import { NavigationContainer, useNavigation} from '@react-navigation/native';
 import { createStackNavigator, HeaderStyleInterpolators } from '@react-navigation/stack';
 import { SharedElement } from 'react-navigation-shared-element';
 import { StyleSheet, Text, Dimensions, TouchableHighlight, View } from 'react-native';
-
+import UserIcon from './userIcon-component';
 
 export default function DareIcon(props) {
     const navigation = useNavigation();
@@ -30,11 +30,9 @@ export default function DareIcon(props) {
                     <SharedElement id={props.id+"time"}>
                         <Text style={styles.time}>{props.Dare.time}</Text>
                     </SharedElement>
-            </View>
+                </View>
                 <View style={{zIndex: 1, flexDirection: 'row', alignItems: "center",}}>
-                    <View style={styles.party}>
-                        <Text style={styles.person}>{props.Dare.member[0]}</Text>
-                    </View>
+                    <UserIcon width='24%' username={props.Dare.member[0]}/>
                     <Text style={{color: 'white', fontSize: 25, fontWeight: '500', marginLeft: '5%', marginBottom: '2%'}}>+{props.Dare.member.length-1}</Text>
                 </View>
                 {props.isStarted ? <><View style={{zIndex: 0, position: 'absolute', left: '40%', right: 0, bottom: -40,}}><Text style={{opacity: .2, color: 'rgb(145, 168, 209)', fontSize: 200, fontStyle: "italic"}}>6</Text>
@@ -99,18 +97,6 @@ const styles = StyleSheet.create({
         fontWeight: "400",
         color: 'gray'
     },
-    person: {
-        color: 'white',
-    },
-    party: {
-        
-        width: '24%',
-        alignItems: "center",
-        justifyContent: "center",
-        aspectRatio: 1,
-        borderRadius: 100   ,
-        backgroundColor: 'rgb(123, 143, 163)',
-        
-    }
+    
   });
   
