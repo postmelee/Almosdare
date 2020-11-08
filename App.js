@@ -11,7 +11,7 @@ import { createSharedElementStackNavigator } from 'react-navigation-shared-eleme
 import { NavigationContainer, useNavigation } from '@react-navigation/native';
 import { createStackNavigator, HeaderStyleInterpolators } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { StyleSheet, ScrollView, TouchableHighlight, Text, View } from 'react-native';
+import { StyleSheet, ScrollView, TouchableHighlight, Text, View, Dimensions} from 'react-native';
 import Home from './components/homeScreen-component';
 import { AntDesign, FontAwesome } from '@expo/vector-icons';
 
@@ -74,7 +74,9 @@ function TabNavigation() {
       })}
       tabBarOptions={{
         style: {
-          backgroundColor: '#eee'
+          backgroundColor: '#eee',
+          height: 50,
+          paddingVertical: 5,
         },
         showLabel: false,
         activeTintColor: 'black',
@@ -94,8 +96,10 @@ export default function App() {
   return (
     <>
     <NavigationContainer>
-      <RootStack.Navigator mode="modal" headerMode="none" initialRouteName="InitialScreen">
-        <RootStack.Screen name="Main" component={TabNavigation}>
+      <RootStack.Navigator mode="modal" headerMode="none" initialRouteName="InitialScreen" screenOptions={{
+        gestureEnabled: false
+      }}>
+        <RootStack.Screen name="Main" component={TabNavigation} >
         </RootStack.Screen>
         <RootStack.Screen name="CreateDareScreen" component={CreateDareScreen}>
         </RootStack.Screen>

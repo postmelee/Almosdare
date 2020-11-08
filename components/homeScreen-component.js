@@ -1,351 +1,584 @@
-import { StatusBar } from 'expo-status-bar';
-import React, { useRef, useState, useEffect } from 'react';
-import Swiper from 'react-native-swiper';
+import { StatusBar } from "expo-status-bar";
+import React, { useRef, useState, useEffect } from "react";
+import Swiper from "react-native-swiper";
 import DareIcon from "./dareIcon-component";
 import InstantIcon from "./instantIcon-component";
 import Header from "./header-component";
-import * as Animatable from 'react-native-animatable';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import { SharedElement } from 'react-navigation-shared-element';
-import { StyleSheet, ScrollView, Animated, TouchableWithoutFeedback, AsyncStorage, Text, View, Dimensions, TouchableOpacity,} from 'react-native';
-import { BlurView } from 'expo-blur';
-import { Ionicons } from '@expo/vector-icons';
+import * as Animatable from "react-native-animatable";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import { SharedElement } from "react-navigation-shared-element";
+import {
+  StyleSheet,
+  ScrollView,
+  TouchableWithoutFeedback,
+  AsyncStorage,
+  Text,
+  View,
+  Animated,
+  Dimensions,
+  TouchableOpacity,
+  RefreshControl,
+} from "react-native";
+import { BlurView } from "expo-blur";
+import { Ionicons } from "@expo/vector-icons";
+import { Entypo } from "@expo/vector-icons";
 
 const Stack = createStackNavigator();
 
-class Fetch extends React.Component{
+const WIDTH = Dimensions.get("window").width;
+const HEIGHT = Dimensions.get("window").height;
 
-  constructor(props){
-      super(props);
-      this.state={
-      }
-  
+export default class Home extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      dareScrollY: new Animated.Value(0),
+      instantScrollY: new Animated.Value(0),
+      scrollY: new Animated.Value(0),
+      scrollX: new Animated.Value(0),
+      isBlured: false,
+      isAccepted: false,
+      isContentTop: true,
+      isRefreshing: false,
+      prevIndex: 1,
+      dareViewHeight: 0,
+      instantViewHeight: 0,
+      selectedOffset: null,
+      invitedDareList: [],
+      invitedinstantList: [],
+      pendingDareList: [
+        {
+          location: "돌고지",
+          date: new Date(),
+          pending: [
+            { id: "5f9c907fac38d00017635332", name: "nick" },
+            { id: "5f9c907fac38d00017635332", name: "nick" },
+          ],
+          invited: [
+            { id: "5f9c907fac38d00017635332", name: "tom" },
+            { id: "5f9c907fac38d00017635332", name: "nick" },
+            { id: "5f9c907fac38d00017635332", name: "nick" },
+          ],
+          _id: "5f9cdbf33865e400174459d7",
+          createdAt: "2020-10-31T03:37:23.038Z",
+          updatedAt: "2020-10-31T03:37:23.880Z",
+          v: 0,
+        },
+        {
+          location: "돌고지",
+          date: new Date(),
+          pending: [
+            { id: "5f9c907fac38d00017635332", name: "nick" },
+            { id: "5f9c907fac38d00017635332", name: "nick" },
+          ],
+          invited: [
+            { id: "5f9c907fac38d00017635332", name: "tom" },
+            { id: "5f9c907fac38d00017635332", name: "nick" },
+            { id: "5f9c907fac38d00017635332", name: "nick" },
+          ],
+          _id: "5f9cdbf33865e400174459d7",
+          createdAt: "2020-10-31T03:37:23.038Z",
+          updatedAt: "2020-10-31T03:37:23.880Z",
+          v: 0,
+        },
+        {
+          location: "돌고지",
+          date: new Date(),
+          pending: [
+            { id: "5f9c907fac38d00017635332", name: "nick" },
+            { id: "5f9c907fac38d00017635332", name: "nick" },
+          ],
+          invited: [
+            { id: "5f9c907fac38d00017635332", name: "tom" },
+            { id: "5f9c907fac38d00017635332", name: "nick" },
+            { id: "5f9c907fac38d00017635332", name: "nick" },
+          ],
+          _id: "5f9cdbf33865e400174459d7",
+          createdAt: "2020-10-31T03:37:23.038Z",
+          updatedAt: "2020-10-31T03:37:23.880Z",
+          v: 0,
+        },
+      ],
+      pendingInstantList: [],
+    };
+    this.fetchData = this.fetchData.bind(this);
+    this.renderBlurPopup = this.renderBlurPopup.bind(this);
+    this.renderPagination = this.renderPagination.bind(this);
   }
 
-  componentDidMount () {
-    const fetch = async () => {
-
-      const result = await this.fetchData();
-      console.log(result);
-      this.props.setInstantList(result);
-    }
-    fetch();
-  }
   fetchData = async () => {
-
-    let token = await AsyncStorage.getItem("userToken")
-    const url = 'https://almosdare.herokuapp.com/api/instants/pending';
-    return await fetch(url, {
-      method: 'GET',
+    let token = await AsyncStorage.getItem("userToken");
+    const url = "https://almosdare.herokuapp.com/api/appointments";
+    fetch(url, {
+      method: "GET",
       headers: new Headers({
-        'Authorization': token,
-        'Content-Type': 'application/json'
-      }), 
+        Authorization: token,
+        "Content-Type": "application/json",
+      }),
     })
-    .then((response) => response.json())
-    .then((json) => {
-      //alert(JSON.stringify(json))
-      if(json.result === 1) {
-        console.log('json '+json)
-        return json.data
-      }
-      else{
-        alert('ERROR')
-        return []
-      }
-    })
-    .catch((error) => {
+      .then((response) => response.json())
+      .then((json) => {
+        //alert(JSON.stringify(json))
+        if (json.result === 1) {
+          this.setState({
+            invitedDareList: json.data.invitedDare,
+
+            invitedinstantList: json.data.invitedInstant,
+            pendingInstantList: json.data.pendingInstant,
+          });
+        } else {
+          alert("ERROR");
+        }
+      })
+      .catch((error) => {
         console.log(error);
-        alert('Server Problem');
-        return []
-    });
-  }
+        alert("Server Problem");
+      });
+  };
 
-  render() {
-    return(
-      <></>
-    )
-  }
-}
-
-class InstantList extends React.Component{
-
-  constructor(props){
-      super(props);
-      this.state={
-      }
-  
-  }
-
-  render() {
-    return(
-      <View key={"View"+this.props.id} style={styles.list} ref={view => {this.viewRef = view}}>              
-        <InstantIcon instantData={this.props.instantData} isBlured={this.props.isBlured} setSelectedData={(data) => {this.props.setSelectedData(data)}} setIsBlured={(toggle) => {this.viewRef && this.viewRef.measure((width, height, px, py, fx, fy) => {
-          this.props.setHighlightOffset({
-            fx: fx,
-            fy: fy,
-          })
-          this.props.setIsBlured(toggle); 
-        })}}></InstantIcon>
-      </View>
-    )
-  }
-}
-
-export default function Home() {
-  const scrollY = useRef(new Animated.Value(0)).current;
-  const [isBlured, setIsBlured] = useState(false);
-  const [selectedData, setSelectedData] = useState(null);
-  const [isAccepted, setIsAccepted] = useState();
-  const [highlightOffset, setHighlightOffset] = useState();
-  const [dareList, setDareList] = useState([{
-      id: 0,
-      date: {month: "JAN", day: "17"},
-      location: "병점 중심상가",
-      time: "03:00 AM",
-      member: ['태규', '현민', '준하', '준엽'],
-    }, {
-      id: 1,
-      date: {month: "MAY", day: "21"},
-      location: "동탄 메타폴리스",
-      time: "07:00 PM",
-      member: ['태규', '준엽'],
-    },
-    {
-      id: 2,
-      date: {month: "OCT", day: "12"},
-      location: "서울 롯데타워",
-      time: "01:00 PM",
-      member: ['태규', '현민', '준엽'],
-    },
-    {
-      id: 3,
-      date: {month: "DEC", day: "10"},
-      location: "경기도 화성시 서동탄로 11 205-1503",
-      time: "06:00 PM",
-      member: ['현민', '준엽'],
-    },
-    {
-      id: 0,
-      date: {month: "JAN", day: "17"},
-      location: "병점 중심상가",
-      time: "03:00 AM",
-      member: ['태규', '현민', '준하', '준엽'],
-    }, {
-      id: 1,
-      date: {month: "MAY", day: "21"},
-      location: "동탄 메타폴리스",
-      time: "07:00 PM",
-      member: ['태규', '준엽'],
-    },
-    {
-      id: 2,
-      date: {month: "OCT", day: "12"},
-      location: "서울 롯데타워",
-      time: "01:00 PM",
-      member: ['태규', '현민', '준엽'],
-    },
-    {
-      id: 3,
-      date: {month: "DEC", day: "10"},
-      location: "경기도 화성시 서동탄로 11 205-1503",
-      time: "06:00 PM",
-      member: ['현민', '준엽'],
-    },
-    {
-      id: 0,
-      date: {month: "JAN", day: "17"},
-      location: "병점 중심상가",
-      time: "03:00 AM",
-      member: ['태규', '현민', '준하', '준엽'],
-    }, {
-      id: 1,
-      date: {month: "MAY", day: "21"},
-      location: "동탄 메타폴리스",
-      time: "07:00 PM",
-      member: ['태규', '준엽'],
-    },
-    {
-      id: 2,
-      date: {month: "OCT", day: "12"},
-      location: "서울 롯데타워",
-      time: "01:00 PM",
-      member: ['태규', '현민', '준엽'],
-    },
-    {
-      id: 3,
-      date: {month: "DEC", day: "10"},
-      location: "경기도 화성시 서동탄로 11 205-1503",
-      time: "06:00 PM",
-      member: ['현민', '준엽'],
+  onRefresh = () => {
+    const wait = (timeout) => {
+      return new Promise(resolve => {
+        setTimeout(resolve, timeout);
+      });
     }
-  ]);
-
-  const [isStarted, setIsStarted] = useState(false);
-  const [pendingInstantList, setPendingInstantList] = useState([]);
-  const [invitedInstantList, setinvitedInstantList] = useState();
-
-  const swiperRef = useRef(null);
-  
-  const setPendingList = async () => {
-    const result = await fetchData();
-    return result
+    this.setState({
+      isRefreshing: true,
+    })
+    wait(2000).then(() => {
+      console.log('refresh');
+      this.setState({
+        isRefreshing: false
+      })
+    })
   }
-  
+  renderBlurPopup() {
+    return (
+      <TouchableWithoutFeedback
+        onPress={() => {
+          this.setState({
+            isBlured: !this.state.isBlured,
+          });
+        }}
+      >
+        <BlurView
+          tint="dark"
+          intensity={100}
+          style={[StyleSheet.absoluteFill, { position: "absolute", zIndex: 2 }]}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              width: "100%",
+              position: "absolute",
+              top: this.state.selectedOffset && this.state.selectedOffset.fy,
+            }}
+          >
+            <InstantIcon
+              isPopup={true}
+              setSelectedData={(data) => {
+                this.setState({
+                  selectedData: data,
+                });
+              }}
+              instantData={this.state.selectedData}
+              isBlured={this.state.isBlured}
+              setIsBlured={(toggle) => {
+                this.setState({
+                  isBlured: toggle,
+                });
+              }}
+              setSelectedOffset={(data) => {
+                this.setState({
+                  selectedOffset: data,
+                });
+              }}
+            ></InstantIcon>
+            <Animatable.View
+              style={{
+                zIndex: 3,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+              animation={this.state.isBlured ? "bounceInRight" : null}
+              delay={0}
+              duration={800}
+              useNativeDriver
+            >
+              <TouchableOpacity
+                onPress={() => {}}
+                style={{
+                  alignItems: "center",
+                  justifyContent: "center",
+                  position: "absolute",
+                  right: 50,
+                }}
+              >
+                <Ionicons
+                  name="ios-checkmark-circle-outline"
+                  size={50}
+                  color="green"
+                />
+              </TouchableOpacity>
+            </Animatable.View>
+          </View>
+        </BlurView>
+      </TouchableWithoutFeedback>
+    );
+  }
+  renderPagination = (index, total, context) => {
+    //Animated.multiply(this.state.scrollY, -1);
+    if (index === 0 && this.state.prevIndex === 1) {
+      this.setState({
+        scrollY: this.state.dareScrollY,
+        prevIndex: 0,
+      });
+    } else if (index === 1 && this.state.prevIndex === 0) {
+      this.setState({
+        scrollY: this.state.instantScrollY,
+        prevIndex: 1,
+      });
+    }
+    const translateY = this.state.scrollY.interpolate({
+      inputRange: [-HEIGHT, 0, 53, HEIGHT],
+      outputRange: [HEIGHT, 0, -53, -53],
+      extrapolate: "clamp",
+    });
+    const translateX = this.state.scrollX.interpolate({
+      inputRange: [0, 414],
+      outputRange: [0, WIDTH / 2],
+      extrapolate: "clamp",
+    });
+    return (
+      <Animated.View
+        style={{
+          backgroundColor: "#fff",
+          position: "absolute",
+          top: 113,
+          left: 0,
+          width: "100%",
+          flexDirection: "row",
+          paddingVertical: 5,
+          borderColor: "rgba(0, 0, 0, 0.1)",
+          borderBottomWidth: 1,
+          transform: [{ translateY: translateY }],
+        }}
+      >
+        <View
+          style={{
+            width: "50%",
+            paddingLeft: "2%",
+            alignItems: "center",
+          }}
+        >
+          <Entypo name="flash" size={30} color="black" />
+        </View>
+        <View
+          style={{
+            width: "50%",
+            paddingRight: "2%",
+            borderColor: "gray",
+            alignItems: "center",
+          }}
+        >
+          <Entypo name="clock" size={30} color="black" />
+        </View>
+        <Animated.View
+          style={{
+            width: "50%",
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            borderBottomWidth: 2,
+            borderColor: "black",
+            transform: [{ translateX: translateX }],
+          }}
+        ></Animated.View>
+      </Animated.View>
+    );
+  };
 
-  return (
+  componentDidMount() {
+    this.fetchData();
+  }
+
+  render() {
+    return (
       <View style={styles.container}>
-        <Fetch setInstantList={(result) => {setPendingInstantList(result)}}></Fetch>
-        <Header scrollY={scrollY}></Header>
-        {(isBlured === true) && (highlightOffset) ? 
-          <TouchableWithoutFeedback onPress={() => {setIsBlured(!isBlured)}}> 
-            <BlurView tint='dark' intensity={100} style={[StyleSheet.absoluteFill, {position: 'absolute', zIndex: 1}]}>
-        
-              <View style={{flexDirection: 'row', width: '100%', position: 'absolute', top: highlightOffset && highlightOffset.fy}}>
-                <InstantIcon isPopup={true} setSelectedData={(data) => {setSelectedData(data)}} selectedData={selectedData} isBlured={isBlured} setIsBlured={(toggle) => {setIsBlured(toggle)}}></InstantIcon>
-                <Animatable.View
-                  style={{zIndex: 3,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    
-                  }}
-                  animation={isBlured ? 'bounceInRight' : null}
-                  delay={0}
-                  duration={800}
-                  useNativeDriver>
-                      <TouchableOpacity
-                        onPress={() => {}}
-                        style={{
-                          alignItems: "center",
-                          justifyContent: "center",
-                          position: 'absolute',
-                          right: 50,
-                        }}>
-                          <Ionicons name="ios-checkmark-circle-outline" size={50} color="green" />
-                      </TouchableOpacity>
-                </Animatable.View>
-              </View>
-            </BlurView>
-        </TouchableWithoutFeedback> : null}
-        <ScrollView style={{flex: 1,}}
+        <Header
+          scrollY={this.state.scrollY}
+          index={this.state.prevIndex}
+        ></Header>
+        {this.state.isBlured === true && this.state.selectedOffset
+          ? this.renderBlurPopup()
+          : null}
+
+        <Swiper
+          style={{
+            marginTop: 60,
+          }}
           scrollEventThrottle={16}
           onScroll={Animated.event(
-            [{nativeEvent: {contentOffset: {y: scrollY}}}], {useNativeDriver: false},
-          )}>
-      
-          <Swiper 
-            loop={false}
-            height={40}
-            showsPagination={false}
-            horizontal={false}
-            ref={swiperRef}
-            scrollEnabled={false}
-            onIndexChanged={(index) => {
-              console.log('top'+index)
-              
-            }}>
-            
-            <View key="title" style={styles.title}>
-              <Text style={styles.titleText}>
-                Dares
-              </Text>
-              
-            </View>
-            <View key="title" style={styles.title}>
-              <Text style={styles.titleText}>
-                Instants
-              </Text>
-            
-            </View>
-          </Swiper>
-          
-
-    <Swiper
-      style={{height: (pendingInstantList.length) * (Dimensions.get('window').width*0.20 + Dimensions.get('window').height*0.02) + Dimensions.get('window').height*0.04}}
-      loop={false}
-      showsPagination={false}
-      onIndexChanged={(index) => {
-        console.log(index)
-        if(index === 0){
-          console.log('back')
-          swiperRef.current.scrollTo(0, false)
-        }
-        else if(index === 1){
-          console.log('front')
-          swiperRef.current.scrollTo(1, false)
-        }
-      
-      }}>
-        <View style={{flex: 1, marginTop: '4%'}}>
-          {dareList.map((dareData, i) => {
-            if((i+1)%2 !== 0){
-              return(
-                <View key={"View"+i} style={styles.list}>
-                  {dareList.length-1 == i ? <DareIcon key={"Icon"+i} id={i} side='left' Dare={dareList[i]}></DareIcon> : 
-                  <>
-                  <DareIcon key={"Icon"+i} id={i} side='left' Dare={dareList[i]}></DareIcon>
-                    <DareIcon key={"Icon"+i+1} id={i+1} side='right' Dare={dareList[i+1]}></DareIcon>
-                  </>}
-                </View>
-                )
-              }
-            })}
-            </View>
-            <View style={{flex: 1, marginTop: '4%'}}> 
+            [
               {
-              pendingInstantList.map((instantData, i) => {
-                console.log('map: '+ instantData)
-                  return(
-                      <InstantList id={i} isPopup={false} instantData={instantData} isBlured={isBlured} setSelectedData={(data) => {setSelectedData(data)}} setHighlightOffset={(data) => {setHighlightOffset(data)}}
-                      setIsBlured={(data) => {setIsBlured(data)}}>
-                      </InstantList>
-                    ) 
+                nativeEvent: {
+                  contentOffset: {
+                    x: this.state.scrollX,
+                  },
+                },
+              },
+            ],
+            { useNativeDriver: false }
+          )}
+          renderPagination={this.renderPagination}
+          loop={false}
+          onIndexChanged={(index) => {}}
+          showsHorizontalScrollIndicator={false}
+        >
+          <ScrollView
+            style={{
+              flex: 1,
+            }}
+            ref={(ref) => {
+              this.dareRef = ref;
+            }}
+            showsVerticalScrollIndicator={false}
+            scrollEventThrottle={16}
+            
+            onScroll={Animated.event(
+              [
+                {
+                  nativeEvent: {
+                    contentOffset: {
+                      y: this.state.dareScrollY,
+                    },
+                  },
+                },
+              ],
+              {
+                listener: (event) => {
+                  if(event.nativeEvent.contentOffset.y < 0){
+                    console.log(event.nativeEvent.contentOffset.y)
                   }
-                )}
+                  if (
+                    event.nativeEvent.contentOffset.y === 0 &&
+                    this.state.prevIndex === 0
+                  ) {
+                    this.instantRef.scrollTo({ y: 0 });
+                  } else if (this.state.prevIndex === 0) {
+                    this.instantRef.scrollTo({
+                      y:
+                        event.nativeEvent.contentOffset.y > 53
+                          ? 53
+                          : event.nativeEvent.contentOffset.y,
+                      animated: false,
+                    });
+                  }
+                },
+                useNativeDriver: false,
+              }
+            )}
+          >
+            <Animated.View style={{
+            width: 2,
+            height: 100,
+            position: 'absolute',
+            right: 1,
+            top: 100,
+            borderColor: 'black',
+            borderWidth: 1,
+            zIndex: 0,
+            transform: [{translateY: this.state.dareScrollY}]
+          }}/>
+            <View
+              style={{
+                flex: 1,
+                flexWrap: "wrap",
+                flexDirection: "row",
+              }}
+              onLayout={(event) => {
+                if (
+                  event.nativeEvent.layout.height !== HEIGHT + 3 &&
+                  event.nativeEvent.layout.height !== this.state.dareViewHeight
+                ) {
+                  this.setState({
+                    dareViewHeight: event.nativeEvent.layout.height,
+                  });
+                  console.log(event.nativeEvent.layout.height);
+                  console.log("hi" + HEIGHT);
+                }
+              }}
+            >
+              <View
+                style={{
+                  width: "100%",
+                  marginBottom: 51,
+                  paddingLeft: 8,
+                  zIndex: 2,
+                }}
+              >
+                <Text style={styles.titleText}>Dare</Text>
+              </View>
+              {this.state.pendingDareList.map((dareData, i) => {
+                return (
+                  <DareIcon
+                    id={i}
+                    key={"DareIcon" + i}
+                    dareData={dareData}
+                    isStarted={false}
+                  />
+                );
+              })}
+              <View
+                style={{
+                  width: "100%",
+                  height: 100,
+                }}
+              ></View>
+              <View
+                style={{
+                  width: "100%",
+                  height: HEIGHT - this.state.dareViewHeight + 3,
+                }}
+              ></View>
             </View>
-          </Swiper>
-          
-        </ScrollView>
-        <StatusBar style="dark"/>
+          </ScrollView>
+          <ScrollView
+            style={{
+              flex: 1,
+            }}
+            ref={(ref) => (this.instantRef = ref)}
+            scrollEventThrottle={16}
+            onScroll={Animated.event(
+              [
+                {
+                  nativeEvent: {
+                    contentOffset: { y: this.state.instantScrollY },
+                  },
+                },
+              ],
+              {
+                listener: (event) => {
+                  if (
+                    event.nativeEvent.contentOffset.y === 0 &&
+                    this.state.prevIndex === 1
+                  ) {
+                    this.dareRef.scrollTo({ y: 0 });
+                  } else if (this.state.prevIndex === 1) {
+                    this.dareRef.scrollTo({
+                      y:
+                        event.nativeEvent.contentOffset.y > 53
+                          ? 53
+                          : event.nativeEvent.contentOffset.y,
+                      animated: false,
+                    });
+                  }
+                },
+                useNativeDriver: false,
+              }
+            )}
+          >
+            <View
+              style={{ flex: 1, flexWrap: "wrap", flexDirection: "row" }}
+              onLayout={(event) => {
+                if (
+                  event.nativeEvent.layout.height !== HEIGHT + 3 &&
+                  event.nativeEvent.layout.height !==
+                    this.state.instantViewHeight
+                ) {
+                  this.setState({
+                    instantViewHeight: event.nativeEvent.layout.height,
+                  });
+                }
+              }}
+            >
+              <View
+                style={{
+                  width: "100%",
+                  marginBottom: 51,
+                  paddingLeft: 8,
+                }}
+              >
+                <Text style={styles.titleText}>Instant</Text>
+              </View>
+              {this.state.pendingInstantList.map((instantData, i) => {
+                return (
+                  <InstantIcon
+                    key={"InstantIcon" + i}
+                    instantData={instantData}
+                    isBlured={this.state.isBlured}
+                    setSelectedData={(data) => {
+                      this.setState({
+                        selectedData: data,
+                      });
+                    }}
+                    setIsBlured={(toggle) => {
+                      this.setState({
+                        isBlured: toggle,
+                      });
+                    }}
+                    setSelectedOffset={(data) => {
+                      this.setState({
+                        selectedOffset: data,
+                      });
+                    }}
+                  />
+                );
+              })}
+              <View
+                style={{
+                  width: "100%",
+                  height: 100,
+                }}
+              ></View>
+              <View
+                style={{
+                  width: "100%",
+                  height: HEIGHT - this.state.instantViewHeight + 3,
+                }}
+              ></View>
+            </View>
+          </ScrollView>
+        </Swiper>
+
+        <StatusBar style="dark" />
       </View>
-      
-  );
+    );
+  }
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     zIndex: 0,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   title: {
-    width: '100%',
-    backgroundColor: '#fff',
+    width: "100%",
     paddingLeft: 8,
-    
+    position: "absolute",
+    top: 70,
   },
   titleText: {
     fontSize: 40,
-    fontWeight: '300',
-    marginLeft: '4%',
-    
+    fontWeight: "300",
+    marginLeft: "4%",
   },
   content: {
-    width: '100%',
+    width: "100%",
     flex: 0.6,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    flexWrap: "wrap",
 
     alignItems: "center",
   },
   list: {
-    marginTop: '4%',
-    flexDirection: 'row',
-    
+    marginTop: "4%",
+    flexDirection: "row",
   },
   dot: {
-    backgroundColor: 'rgba(52, 101, 217, .4)',
+    backgroundColor: "rgba(52, 101, 217, .4)",
     width: 8,
     height: 8,
     borderRadius: 4,
@@ -354,11 +587,10 @@ const styles = StyleSheet.create({
   },
   activeDot: {
     width: 20,
-    backgroundColor: '#3465d9',
-      height: 8,
-      marginHorizontal: 5,
-      borderRadius: 4,
-      marginVertical: 3,
+    backgroundColor: "#3465d9",
+    height: 8,
+    marginHorizontal: 5,
+    borderRadius: 4,
+    marginVertical: 3,
   },
 });
-

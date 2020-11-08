@@ -1,36 +1,47 @@
-import { StatusBar } from 'expo-status-bar';
-import React, { useState } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator, HeaderStyleInterpolators } from '@react-navigation/stack';
-import { StyleSheet, Animated, Dimensions, Text, View } from 'react-native';
+import { StatusBar } from "expo-status-bar";
+import React, { useState } from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import {
+  createStackNavigator,
+  HeaderStyleInterpolators,
+} from "@react-navigation/stack";
+import { StyleSheet, Dimensions, Text, View, Animated } from "react-native";
 
 export default function Header(props) {
-    const imageOpacity = props.scrollY.interpolate({
-        inputRange: [0, 20, 40],
-        outputRange: [0, 0.5, 1],
-        extrapolate: 'clamp',
-      });
-    return( 
-        <Animated.View style={[styles.header, {opacity: imageOpacity}]}> 
-            <View style={styles.headerBox}>
-                <Text style={styles.headerTitle}>Appointments</Text> 
-            </View>
-        </Animated.View>
-    );
+  const imageOpacity = props.scrollY.interpolate({
+    inputRange: [0, 53],
+    outputRange: [0, 1],
+    extrapolate: "clamp",
+  });
+  return (
+    <Animated.View style={[styles.header, { opacity: imageOpacity }]}>
+      <View style={styles.headerBox}>
+        <Text style={styles.headerTitle}>
+          {props.index === 0 ? "Dare" : "Instant"}
+        </Text>
+      </View>
+    </Animated.View>
+  );
 }
 
 const styles = StyleSheet.create({
-    header: {
-        flex: 0.1,
-        backgroundColor: '#eee',
-      },
-    headerBox: {
-        justifyContent: 'center',
-        marginTop: Math.round(Dimensions.get('window').height)/22,
-        alignItems: 'center',
-    },
-    headerTitle: {
-        fontSize: 18,
-        fontWeight: '400'
-    }
-})
+  header: {
+    height: 60,
+    paddingTop: 20,
+    backgroundColor: "#eee",
+    justifyContent: "center",
+    position: "absolute",
+    width: "100%",
+    top: 0,
+    left: 0,
+    zIndex: 1,
+  },
+  headerBox: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: "400",
+  },
+});
