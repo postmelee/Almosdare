@@ -41,7 +41,10 @@ export default class Home extends React.Component {
       isAccepted: false,
       isContentTop: true,
       isRefreshing: false,
-      prevIndex: 1,
+      isMomentumScroll: false,
+      isTouched: false,
+      showIndicator: false,
+      currentIndex: 0,
       dareViewHeight: 0,
       instantViewHeight: 0,
       selectedOffset: null,
@@ -139,20 +142,20 @@ export default class Home extends React.Component {
 
   onRefresh = () => {
     const wait = (timeout) => {
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         setTimeout(resolve, timeout);
       });
-    }
+    };
     this.setState({
       isRefreshing: true,
-    })
+    });
     wait(2000).then(() => {
-      console.log('refresh');
+      console.log("refresh");
       this.setState({
-        isRefreshing: false
-      })
-    })
-  }
+        isRefreshing: false,
+      });
+    });
+  };
   renderBlurPopup() {
     return (
       <TouchableWithoutFeedback
@@ -229,27 +232,28 @@ export default class Home extends React.Component {
   }
   renderPagination = (index, total, context) => {
     //Animated.multiply(this.state.scrollY, -1);
-    if (index === 0 && this.state.prevIndex === 1) {
-      this.setState({
-        scrollY: this.state.dareScrollY,
-        prevIndex: 0,
-      });
-    } else if (index === 1 && this.state.prevIndex === 0) {
-      this.setState({
-        scrollY: this.state.instantScrollY,
-        prevIndex: 1,
-      });
-    }
+    
+    console.log('render!')
     const translateY = this.state.scrollY.interpolate({
       inputRange: [-HEIGHT, 0, 53, HEIGHT],
       outputRange: [HEIGHT, 0, -53, -53],
       extrapolate: "clamp",
     });
     const translateX = this.state.scrollX.interpolate({
-      inputRange: [0, 414],
+      inputRange: [0, WIDTH],
       outputRange: [0, WIDTH / 2],
       extrapolate: "clamp",
     });
+    const imageOpacityLeft = this.state.scrollX.interpolate({
+      inputRange: [0, WIDTH],
+      outputRange: [1, 0.1],
+      extrapolate: 'clamp',
+    })
+    const imageOpacityRight = this.state.scrollX.interpolate({
+      inputRange: [0, WIDTH],
+      outputRange: [0.1, 1],
+      extrapolate: 'clamp',
+    })
     return (
       <Animated.View
         style={{
@@ -265,25 +269,37 @@ export default class Home extends React.Component {
           transform: [{ translateY: translateY }],
         }}
       >
-        <View
+        <TouchableWithoutFeedback
+        onPress={() => {
+          this.swiperRef.scrollTo(0)
+        }}>
+        <Animated.View
           style={{
             width: "50%",
             paddingLeft: "2%",
             alignItems: "center",
+            opacity: imageOpacityLeft,
           }}
         >
           <Entypo name="flash" size={30} color="black" />
-        </View>
-        <View
+        </Animated.View>
+
+        </TouchableWithoutFeedback>
+        <TouchableWithoutFeedback
+        onPress={() => {
+          this.swiperRef.scrollTo(1)
+        }}>
+        <Animated.View
           style={{
             width: "50%",
             paddingRight: "2%",
-            borderColor: "gray",
             alignItems: "center",
+            opacity: imageOpacityRight,
           }}
         >
-          <Entypo name="clock" size={30} color="black" />
-        </View>
+          <Entypo name="clock" size={30} color="black"/>
+        </Animated.View>
+        </TouchableWithoutFeedback>
         <Animated.View
           style={{
             width: "50%",
@@ -301,6 +317,10 @@ export default class Home extends React.Component {
 
   componentDidMount() {
     this.fetchData();
+    this.setState({
+      currentIndex: 0,
+      scrollY: this.state.dareScrollY,
+    })
   }
 
   render() {
@@ -308,7 +328,7 @@ export default class Home extends React.Component {
       <View style={styles.container}>
         <Header
           scrollY={this.state.scrollY}
-          index={this.state.prevIndex}
+          index={this.state.currentIndex}
         ></Header>
         {this.state.isBlured === true && this.state.selectedOffset
           ? this.renderBlurPopup()
@@ -318,6 +338,7 @@ export default class Home extends React.Component {
           style={{
             marginTop: 60,
           }}
+          ref={ref => this.swiperRef = ref}
           scrollEventThrottle={16}
           onScroll={Animated.event(
             [
@@ -333,7 +354,19 @@ export default class Home extends React.Component {
           )}
           renderPagination={this.renderPagination}
           loop={false}
-          onIndexChanged={(index) => {}}
+          onIndexChanged={(index) => {
+            if (index === 0 && this.state.currentIndex === 1) {
+              this.setState({
+                scrollY: this.state.dareScrollY,
+                currentIndex: 0,
+              });
+            } else if (index === 1 && this.state.currentIndex === 0) {
+              this.setState({
+                scrollY: this.state.instantScrollY,
+                currentIndex: 1,
+              });
+            }
+          }}
           showsHorizontalScrollIndicator={false}
         >
           <ScrollView
@@ -358,15 +391,14 @@ export default class Home extends React.Component {
               ],
               {
                 listener: (event) => {
-                  if(event.nativeEvent.contentOffset.y < 0){
-                    console.log(event.nativeEvent.contentOffset.y)
+                  if (event.nativeEvent.contentOffset.y < 0) {
                   }
                   if (
                     event.nativeEvent.contentOffset.y === 0 &&
-                    this.state.prevIndex === 0
+                    this.state.currentIndex === 0
                   ) {
                     this.instantRef.scrollTo({ y: 0 });
-                  } else if (this.state.prevIndex === 0) {
+                  } else if (this.state.currentIndex === 0) {
                     this.instantRef.scrollTo({
                       y:
                         event.nativeEvent.contentOffset.y > 53
@@ -380,17 +412,7 @@ export default class Home extends React.Component {
               }
             )}
           >
-            <Animated.View style={{
-            width: 2,
-            height: 100,
-            position: 'absolute',
-            right: 1,
-            top: 100,
-            borderColor: 'black',
-            borderWidth: 1,
-            zIndex: 0,
-            transform: [{translateY: this.state.dareScrollY}]
-          }}/>
+
             <View
               style={{
                 flex: 1,
@@ -405,17 +427,16 @@ export default class Home extends React.Component {
                   this.setState({
                     dareViewHeight: event.nativeEvent.layout.height,
                   });
-                  console.log(event.nativeEvent.layout.height);
-                  console.log("hi" + HEIGHT);
                 }
               }}
             >
               <View
                 style={{
                   width: "100%",
-                  marginBottom: 51,
+                  paddingBottom: 51,
                   paddingLeft: 8,
                   zIndex: 2,
+                  backgroundColor: "#fff",
                 }}
               >
                 <Text style={styles.titleText}>Dare</Text>
@@ -450,6 +471,12 @@ export default class Home extends React.Component {
             }}
             ref={(ref) => (this.instantRef = ref)}
             scrollEventThrottle={16}
+            scrollIndicatorInsets={{
+              top: 100,
+              right: 0,
+              left: 0,
+              bottom: 60,
+            }}
             onScroll={Animated.event(
               [
                 {
@@ -462,10 +489,10 @@ export default class Home extends React.Component {
                 listener: (event) => {
                   if (
                     event.nativeEvent.contentOffset.y === 0 &&
-                    this.state.prevIndex === 1
+                    this.state.currentIndex === 1
                   ) {
                     this.dareRef.scrollTo({ y: 0 });
-                  } else if (this.state.prevIndex === 1) {
+                  } else if (this.state.currentIndex === 1) {
                     this.dareRef.scrollTo({
                       y:
                         event.nativeEvent.contentOffset.y > 53
@@ -479,6 +506,7 @@ export default class Home extends React.Component {
               }
             )}
           >
+            
             <View
               style={{ flex: 1, flexWrap: "wrap", flexDirection: "row" }}
               onLayout={(event) => {

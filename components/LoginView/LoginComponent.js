@@ -20,6 +20,8 @@ export default class LoginComponent extends React.Component{
         }
         this.storeToken = this.storeToken.bind(this);
         this.getToken = this.getToken.bind(this);
+        this.loginAndNavigate = this.loginAndNavigate.bind(this);
+        this.onFocus = this.onFocus.bind(this);
     
     }
     
@@ -76,22 +78,25 @@ export default class LoginComponent extends React.Component{
         return(
             <View style={styles.container}>
                 <Text style={styles.title}>Login</Text>
-                <Text style={styles.text}>Login with E-mail and Password</Text>
+                <Text style={styles.text}>Login with Phone and Password</Text>
                 <View style={styles.action}>
                     <View style={[styles.section, {
-                        borderColor: this.state.borderColor=="email" ?
+                        borderColor: this.state.borderColor=="phone" ?
                         '#3465d9' : 'gray'
                     }]}>
-                        <MaterialCommunityIcons name="email-outline" size={20} 
-                        color={this.state.borderColor=="email" ?
+                        <Feather name="phone" size={20} 
+                        color={this.state.borderColor=="phone" ?
                         '#3465d9' : 'gray'}/>
                         <TextInput
-                            placeholder="E-mail"
+                            clearButtonMode={'always'}
+                            keyboardType={'phone-pad'}
+                            placeholder="Phone Number"
+                            autoFocus={true}
                             style={[styles.textInput, {
-                                borderColor: this.state.borderColor=="email" ?
+                                borderColor: this.state.borderColor=="phone" ?
                         '#3465d9' : 'gray'
                             }]}
-                            onFocus={() => this.onFocus("email")}
+                            onFocus={() => this.onFocus("phone")}
                             onChangeText={(text) => {
                                 this.setState({
                                     userId: text,
@@ -108,6 +113,7 @@ export default class LoginComponent extends React.Component{
                         color={this.state.borderColor=="password" ?
                         '#3465d9' : 'gray'}/>
                         <TextInput
+                        clearButtonMode={'always'}
                             placeholder="Password"
                             style={[styles.textInput, {
                                 borderColor: this.state.borderColor=="password" ?
