@@ -16,7 +16,7 @@ import {
   Text,
   View,
   Animated,
-  Dimensions,
+  Dimensions, 
   TouchableOpacity,
   RefreshControl,
 } from "react-native";
@@ -150,7 +150,6 @@ export default class Home extends React.Component {
       isRefreshing: true,
     });
     wait(2000).then(() => {
-      console.log("refresh");
       this.setState({
         isRefreshing: false,
       });
@@ -166,20 +165,41 @@ export default class Home extends React.Component {
         }}
       >
         <BlurView
-          tint="dark"
+          tint="light"
           intensity={100}
-          style={[StyleSheet.absoluteFill, { position: "absolute", zIndex: 2 }]}
+          style={[StyleSheet.absoluteFill, { position: "absolute", zIndex: 2,}]}
         >
-          <View
+          <Animatable.View
+          style={{
+            position: 'absolute',
+            top: 40,
+            width: '100%',
+            alignItems: 'center'
+          }}
+          animation='bounceInDown'>
+            <Ionicons
+                    name="ios-checkmark-circle-outline"
+                    size={60}
+                    color="green"
+                  />
+          </Animatable.View>
+          <Animatable.View
             style={{
-              flexDirection: "row",
               width: "100%",
               position: "absolute",
-              top: this.state.selectedOffset && this.state.selectedOffset.fy,
+              top: HEIGHT / 2 - WIDTH * 0.2,
+              
+              borderRadius: 40,
+              
             }}
+            animation={this.state.isBlured ? "fadeInUp" : null}
+            delay={0}
+            duration={300}
+            useNativeDriver
           >
             <InstantIcon
               isPopup={true}
+              id={0}
               setSelectedData={(data) => {
                 this.setState({
                   selectedData: data,
@@ -192,48 +212,49 @@ export default class Home extends React.Component {
                   isBlured: toggle,
                 });
               }}
-              setSelectedOffset={(data) => {
-                this.setState({
-                  selectedOffset: data,
-                });
-              }}
             ></InstantIcon>
-            <Animatable.View
+            <View
               style={{
-                zIndex: 3,
-                alignItems: "center",
+                width: "100%",
+                flexDirection: "row",
                 justifyContent: "center",
+                marginTop: "7%",
               }}
-              animation={this.state.isBlured ? "bounceInRight" : null}
-              delay={0}
-              duration={800}
-              useNativeDriver
             >
-              <TouchableOpacity
-                onPress={() => {}}
+              <View
                 style={{
-                  alignItems: "center",
-                  justifyContent: "center",
-                  position: "absolute",
-                  right: 50,
+                  marginHorizontal: 30,
                 }}
               >
-                <Ionicons
-                  name="ios-checkmark-circle-outline"
-                  size={50}
-                  color="green"
-                />
-              </TouchableOpacity>
-            </Animatable.View>
-          </View>
+                <TouchableOpacity
+                onPress={() => {
+
+                }}>
+                  <Ionicons
+                    name="ios-checkmark-circle-outline"
+                    size={80}
+                    color="black"
+                  />
+                </TouchableOpacity>
+              </View>
+              <View
+                style={{
+                  marginHorizontal: 30,
+                }}
+              >
+                <TouchableOpacity>
+                  <Ionicons name="ios-close-circle" size={80} color="black" />
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Animatable.View>
         </BlurView>
       </TouchableWithoutFeedback>
     );
   }
   renderPagination = (index, total, context) => {
     //Animated.multiply(this.state.scrollY, -1);
-    
-    console.log('render!')
+
     const translateY = this.state.scrollY.interpolate({
       inputRange: [-HEIGHT, 0, 53, HEIGHT],
       outputRange: [HEIGHT, 0, -53, -53],
@@ -246,18 +267,18 @@ export default class Home extends React.Component {
     });
     const imageOpacityLeft = this.state.scrollX.interpolate({
       inputRange: [0, WIDTH],
-      outputRange: [1, 0.1],
-      extrapolate: 'clamp',
-    })
+      outputRange: [1, 0.2],
+      extrapolate: "clamp",
+    });
     const imageOpacityRight = this.state.scrollX.interpolate({
       inputRange: [0, WIDTH],
-      outputRange: [0.1, 1],
-      extrapolate: 'clamp',
-    })
+      outputRange: [0.2, 1],
+      extrapolate: "clamp",
+    });
     return (
       <Animated.View
         style={{
-          backgroundColor: "#fff",
+          backgroundColor: 'rgb(240, 240, 240)',
           position: "absolute",
           top: 113,
           left: 0,
@@ -267,38 +288,40 @@ export default class Home extends React.Component {
           borderColor: "rgba(0, 0, 0, 0.1)",
           borderBottomWidth: 1,
           transform: [{ translateY: translateY }],
+          
         }}
       >
         <TouchableWithoutFeedback
-        onPress={() => {
-          this.swiperRef.scrollTo(0)
-        }}>
-        <Animated.View
-          style={{
-            width: "50%",
-            paddingLeft: "2%",
-            alignItems: "center",
-            opacity: imageOpacityLeft,
+          onPress={() => {
+            this.swiperRef.scrollTo(0);
           }}
         >
-          <Entypo name="flash" size={30} color="black" />
-        </Animated.View>
-
+          <Animated.View
+            style={{
+              width: "50%",
+              paddingLeft: "2%",
+              alignItems: "center",
+              opacity: imageOpacityLeft,
+            }}
+          >
+            <Entypo name="flash" size={30} color="black" />
+          </Animated.View>
         </TouchableWithoutFeedback>
         <TouchableWithoutFeedback
-        onPress={() => {
-          this.swiperRef.scrollTo(1)
-        }}>
-        <Animated.View
-          style={{
-            width: "50%",
-            paddingRight: "2%",
-            alignItems: "center",
-            opacity: imageOpacityRight,
+          onPress={() => {
+            this.swiperRef.scrollTo(1);
           }}
         >
-          <Entypo name="clock" size={30} color="black"/>
-        </Animated.View>
+          <Animated.View
+            style={{
+              width: "50%",
+              paddingRight: "2%",
+              alignItems: "center",
+              opacity: imageOpacityRight,
+            }}
+          >
+            <Entypo name="clock" size={30} color="black" />
+          </Animated.View>
         </TouchableWithoutFeedback>
         <Animated.View
           style={{
@@ -320,7 +343,7 @@ export default class Home extends React.Component {
     this.setState({
       currentIndex: 0,
       scrollY: this.state.dareScrollY,
-    })
+    });
   }
 
   render() {
@@ -330,15 +353,13 @@ export default class Home extends React.Component {
           scrollY={this.state.scrollY}
           index={this.state.currentIndex}
         ></Header>
-        {this.state.isBlured === true && this.state.selectedOffset
-          ? this.renderBlurPopup()
-          : null}
+        {this.state.isBlured === true ? this.renderBlurPopup() : null}
 
         <Swiper
           style={{
             marginTop: 60,
           }}
-          ref={ref => this.swiperRef = ref}
+          ref={(ref) => (this.swiperRef = ref)}
           scrollEventThrottle={16}
           onScroll={Animated.event(
             [
@@ -378,7 +399,6 @@ export default class Home extends React.Component {
             }}
             showsVerticalScrollIndicator={false}
             scrollEventThrottle={16}
-            
             onScroll={Animated.event(
               [
                 {
@@ -412,7 +432,6 @@ export default class Home extends React.Component {
               }
             )}
           >
-
             <View
               style={{
                 flex: 1,
@@ -436,7 +455,7 @@ export default class Home extends React.Component {
                   paddingBottom: 51,
                   paddingLeft: 8,
                   zIndex: 2,
-                  backgroundColor: "#fff",
+                  backgroundColor: 'rgb(240, 240, 240)',
                 }}
               >
                 <Text style={styles.titleText}>Dare</Text>
@@ -506,7 +525,6 @@ export default class Home extends React.Component {
               }
             )}
           >
-            
             <View
               style={{ flex: 1, flexWrap: "wrap", flexDirection: "row" }}
               onLayout={(event) => {
@@ -526,6 +544,7 @@ export default class Home extends React.Component {
                   width: "100%",
                   marginBottom: 51,
                   paddingLeft: 8,
+                  backgroundColor: 'rgb(240, 240, 240)',
                 }}
               >
                 <Text style={styles.titleText}>Instant</Text>
@@ -534,7 +553,9 @@ export default class Home extends React.Component {
                 return (
                   <InstantIcon
                     key={"InstantIcon" + i}
+                    id={i}
                     instantData={instantData}
+                    isPopup={false}
                     isBlured={this.state.isBlured}
                     setSelectedData={(data) => {
                       this.setState({
@@ -544,11 +565,6 @@ export default class Home extends React.Component {
                     setIsBlured={(toggle) => {
                       this.setState({
                         isBlured: toggle,
-                      });
-                    }}
-                    setSelectedOffset={(data) => {
-                      this.setState({
-                        selectedOffset: data,
                       });
                     }}
                   />
@@ -580,7 +596,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     zIndex: 0,
-    backgroundColor: "#fff",
+    backgroundColor: 'rgb(240, 240, 240)',
   },
   title: {
     width: "100%",

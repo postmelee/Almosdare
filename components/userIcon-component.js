@@ -11,18 +11,57 @@ import { StyleSheet, Text, Dimensions, TouchableHighlight, View } from 'react-na
 export default function UserIcon(props) {
     const navigation = useNavigation();
     
+    const randomColor = (index) => {
+        const colors2020 = [
+          "rgb(59, 85, 132)",
+          "rgb(160, 142, 131)",
+          "rgb(123, 131, 134)",
+          "rgb(112, 142, 189)",
+        ];
+        const colors2019 = [
+            "rgb(28, 76, 71)",
+            "rgb(113, 106, 80)",
+            "rgb(156, 150, 64)",
+            "rgb(74, 73, 68)",
+            "rgb(241, 112, 103)",
+            "rgb(167, 96, 107)",
+        ]
+        const colors2018 = [
+            "rgb(29, 128, 172)",
+            "rgb(107, 94, 150)",
+            "rgb(251, 177, 69)",
+            "rgb(213, 67, 101)",
+            "rgb(242, 121, 54)",
+            "rgb(181, 109, 162)",
+            "rgb(196, 145, 108)",
+            "rgb(210, 179, 94)",
+        ]
+
+        const pallet = [colors2018, colors2019, colors2020]
+
+        return pallet[index%3][Math.floor(Math.random() * pallet[index%3].length)];
+      }
     //props should have 
     //  date = {month, day}, location=String(""), time=String("xx:xx xm"), member = []
     return(
+        <View style={{flex: 1, aspectRatio: 1, borderWidth: 2, borderRadius: 100, padding: 2,
+            borderColor: "rgb(145, 168, 209)",}}>
         <View style={{
-            width: props.width,
+            flex: 1,
             alignItems: "center",
             justifyContent: "center",
             aspectRatio: 1,
+            padding: 7,
             borderRadius: 100,
-            backgroundColor: 'rgb(123, 143, 163)',
+            backgroundColor: randomColor(props.id),
+            marginRight: 11,
+            
+            
+              
         }}>
-            <Text style={{color: 'white', fontSize: props.fontSize}}>{props.username}</Text>
+            <Text style={{color: 'black', fontSize: props.fontSize, textAlign: 'center'}} allowFontScaling adjustsFontSizeToFit={true} minimumFontScale={0.5} numberOfLines={1} ellipsizeMode='tail'>{props.username}</Text>
+            
+        </View>
         </View>
                     
     

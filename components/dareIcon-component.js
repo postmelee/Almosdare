@@ -13,6 +13,7 @@ import {
   TouchableHighlight,
   View,
 } from "react-native";
+import { LinearGradient } from 'expo-linear-gradient';
 import UserIcon from "./userIcon-component";
 
 export default function DareIcon(props) {
@@ -20,13 +21,18 @@ export default function DareIcon(props) {
   //props should have
   //  date = {month, day}, location=String(""), time=String("xx:xx xm"), member = []
   return (
+    
     <TouchableHighlight
       style={styles.blockContainer}
-      activeOpacity={0.6}
-      underlayColor="#DDDDDD"
+      activeOpacity={0.7}
+      underlayColor='rgb(200, 200, 200)'
       onPress={() => navigation.navigate("DareView", { props })}
       onLongPress={() => alert(Math.round(Dimensions.get("window").height))}
     >
+      <View style={{flex: 1, borderRadius: 30, shadowColor: 'white', shadowOffset: {width: -4, height: -4}, shadowRadius: 3, shadowOpacity:0.8}}>
+      <LinearGradient colors={['#F0F0F0', '#F0F0F0']} style={{flex: 1, borderRadius: 30,
+    padding: 18, }}>
+      
       <View style={styles.blockContent}>
         <View style={styles.date}>
           <SharedElement style={{}} id={props.id + "month"}>
@@ -51,10 +57,12 @@ export default function DareIcon(props) {
           </SharedElement>
         </View>
         <View style={{ zIndex: 1, flexDirection: "row", alignItems: "center" }}>
-          <UserIcon width="24%" username={props.dareData.invited[0].name} />
+          <View style={{width: "23%"}}>
+            <UserIcon id={props.id} fontSize={20} username={props.dareData.invited[0].name} />
+          </View>
           <Text
             style={{
-              color: "white",
+              color: "black",
               fontSize: 25,
               fontWeight: "500",
               marginLeft: "5%",
@@ -89,7 +97,10 @@ export default function DareIcon(props) {
           </>
         ) : null}
       </View>
+    </LinearGradient>
+    </View>
     </TouchableHighlight>
+    
   );
 }
 
@@ -111,12 +122,18 @@ const styles = StyleSheet.create({
   },
   blockContainer: {
     borderRadius: 30,
-    padding: 18,
+    
     width: "44%",
     aspectRatio: 1,
     marginLeft: "4%",
     marginTop: "4%",
-    backgroundColor: "rgb(28, 28, 30)",
+    //backgroundColor: "rgb(28, 28, 30)",
+    shadowOffset: {
+      width: 6,
+      height: 6,
+    },
+    shadowColor: 'grey',
+    shadowRadius: 4, shadowOpacity: 0.6
   },
   date: {
     zIndex: 1,
@@ -129,12 +146,12 @@ const styles = StyleSheet.create({
   day: {
     fontSize: 26,
     fontWeight: "600",
-    color: "white",
+    color: "black",
   },
   location: {
     fontSize: 17,
     fontWeight: "600",
-    color: "white",
+    color: "black",
   },
   time: {
     fontSize: 20,

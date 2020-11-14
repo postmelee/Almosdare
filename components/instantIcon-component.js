@@ -43,78 +43,78 @@ export default class InstantIcon extends React.Component {
         */
       <TouchableHighlight
         ref={(ref) => (this.viewRef = ref)}
-        style={[styles.container, { marginTop: this.props.isPopup ? 0 : "4%" }]}
+        style={styles.container}
         activeOpacity={0.6}
         underlayColor="#DDDDDD"
         onPress={() => {
-          this.viewRef.measure((x, y, width, height, pageX, pageY) => {
-            this.props.setSelectedOffset({
-              fx: pageX,
-              fy: pageY,
-            });
-            this.props.isPopup
-              ? this.props.setSelectedData(null)
-              : this.props.setSelectedData(this.props.instantData);
-            this.props.setIsBlured(!this.props.isBlured);
-          });
+          this.props.isPopup
+          ? this.props.setSelectedData(null)
+          : this.props.setSelectedData(this.props.instantData);
+        this.props.setIsBlured(!this.props.isBlured);
         }}
         onLongPress={() => alert(Math.round(Dimensions.get("window").height))}
       >
+      <View style={{borderRadius: 20, flex: 1,
+    backgroundColor: 'rgb(240, 240, 240)',
+    shadowColor: 'white', shadowOffset: {width: -4, height: -4}, shadowRadius: 3, shadowOpacity:0.8}}>
         <View style={styles.block}>
           {this.props.instantData &&
             this.props.instantData.invited.map((userData, i) => {
               return (
+                <View key={"InvitedUser" + i} style={{marginLeft: 5, paddingTop:2, width: "18%", aspectRatio:0.85, alignItems: 'center'}}>
                 <UserIcon
-                  key={"InvitedUser" + i}
-                  width="15%"
+                  id={this.props.id}
                   username={userData.nickname}
                   fontSize={20}
                 />
+                <Text numberOfLines={1} ellipsizeMode='tail' style={{ marginTop: 2,fontSize: 11, textAlign: 'center'}}>{userData.nickname}</Text>
+                </View>
+
               );
             })}
           {this.props.instantData &&
             this.props.instantData.pending.map((userData, i) => {
               return (
+                <View key={"PendingUser" + i} style={{marginLeft: 5, paddingTop:2, width: "18%", aspectRatio:0.85, alignItems: 'center'}}>
                 <UserIcon
-                  key={"PendingUser" + i}
-                  width="15%"
+                  id={this.props.id}
                   username={userData.nickname}
                   fontSize={20}
                 />
+                <Text numberOfLines={1} ellipsizeMode='tail' style={{ marginTop: 2,fontSize: 11, textAlign: 'center'}}>{userData.nickname}</Text>
+                </View>
               );
             })}
+        </View>
         </View>
       </TouchableHighlight>
     );
   }
 }
 
-function randomColor() {
-  const colors = [
-    "rgb(247, 119, 106)",
-    "rgb(145, 168, 209)",
-    "rgb(151, 221, 221)",
-    "rgb(247, 201, 201)",
-    "rgb(152, 150, 164)",
-    "rgb(249, 224, 61)",
-  ];
-  return colors[Math.floor(Math.random() * colors.length)];
-}
 const styles = StyleSheet.create({
   container: {
     borderRadius: 30,
-    padding: 18,
+    
     width: "92%",
     height: Dimensions.get("window").width * 0.2,
     marginLeft: "4%",
     marginRight: "4%",
-    backgroundColor: "rgb(28, 28, 30)",
     zIndex: 2,
+    marginTop: '4%',
+    shadowOffset: {
+      width: 6,
+      height: 6,
+    },
+    shadowColor: 'grey',
+    shadowRadius: 4, shadowOpacity: 0.6
+    
   },
   block: {
     flexDirection: "row",
     alignItems: "center",
     flex: 1,
     zIndex: 2,
+    paddingHorizontal: 10,
   },
 });
