@@ -28,14 +28,13 @@ const styles = StyleSheet.create({
   header: {
     height: 60,
     paddingTop: 20,
-    backgroundColor: "#eee",
+    backgroundColor: "#ddd",
     justifyContent: "center",
     position: "absolute",
     width: "100%",
     top: 0,
     left: 0,
     zIndex: 1,
-    
   },
   headerBox: {
     justifyContent: "center",

@@ -16,16 +16,21 @@ import {
   Text,
   View,
   Animated,
-  Dimensions, 
+  Dimensions,
   TouchableOpacity,
   RefreshControl,
 } from "react-native";
 import { BlurView } from "expo-blur";
+import { AppLoading } from "expo";
+import * as Font from "expo-font";
 import { Ionicons } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 
 const Stack = createStackNavigator();
-
+const customFonts = {
+  "OpenSansCondensed-Light": require("../assets/fonts/OpenSansCondensed-Light.ttf"),
+  "NotoSansKR-Light": require("../assets/fonts/NotoSansKR-Light.otf"),
+};
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
 
@@ -33,6 +38,7 @@ export default class Home extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      loaded: false,
       dareScrollY: new Animated.Value(0),
       instantScrollY: new Animated.Value(0),
       scrollY: new Animated.Value(0),
@@ -138,6 +144,13 @@ export default class Home extends React.Component {
         console.log(error);
         alert("Server Problem");
       });
+    await Font.loadAsync(customFonts);
+    this.setState({
+      loaded: true,
+
+      currentIndex: 0,
+      scrollY: this.state.dareScrollY,
+    });
   };
 
   onRefresh = () => {
@@ -166,31 +179,31 @@ export default class Home extends React.Component {
       >
         <BlurView
           tint="light"
-          intensity={100}
-          style={[StyleSheet.absoluteFill, { position: "absolute", zIndex: 2,}]}
+          intensity={90}
+          style={[StyleSheet.absoluteFill, { position: "absolute", zIndex: 2 }]}
         >
           <Animatable.View
-          style={{
-            position: 'absolute',
-            top: 40,
-            width: '100%',
-            alignItems: 'center'
-          }}
-          animation='bounceInDown'>
+            style={{
+              position: "absolute",
+              top: 40,
+              width: "100%",
+              alignItems: "center",
+            }}
+            animation="bounceInDown"
+          >
             <Ionicons
-                    name="ios-checkmark-circle-outline"
-                    size={60}
-                    color="green"
-                  />
+              name="ios-checkmark-circle-outline"
+              size={60}
+              color="green"
+            />
           </Animatable.View>
           <Animatable.View
             style={{
               width: "100%",
               position: "absolute",
               top: HEIGHT / 2 - WIDTH * 0.2,
-              
+
               borderRadius: 40,
-              
             }}
             animation={this.state.isBlured ? "fadeInUp" : null}
             delay={0}
@@ -226,10 +239,7 @@ export default class Home extends React.Component {
                   marginHorizontal: 30,
                 }}
               >
-                <TouchableOpacity
-                onPress={() => {
-
-                }}>
+                <TouchableOpacity onPress={() => {}}>
                   <Ionicons
                     name="ios-checkmark-circle-outline"
                     size={80}
@@ -278,7 +288,7 @@ export default class Home extends React.Component {
     return (
       <Animated.View
         style={{
-          backgroundColor: 'rgb(240, 240, 240)',
+          backgroundColor: "rgb(240, 240, 240)",
           position: "absolute",
           top: 113,
           left: 0,
@@ -288,7 +298,6 @@ export default class Home extends React.Component {
           borderColor: "rgba(0, 0, 0, 0.1)",
           borderBottomWidth: 1,
           transform: [{ translateY: translateY }],
-          
         }}
       >
         <TouchableWithoutFeedback
@@ -340,255 +349,256 @@ export default class Home extends React.Component {
 
   componentDidMount() {
     this.fetchData();
-    this.setState({
-      currentIndex: 0,
-      scrollY: this.state.dareScrollY,
-    });
   }
 
   render() {
-    return (
-      <View style={styles.container}>
-        <Header
-          scrollY={this.state.scrollY}
-          index={this.state.currentIndex}
-        ></Header>
-        {this.state.isBlured === true ? this.renderBlurPopup() : null}
+    if (this.state.loaded) {
+      return (
+        <View style={styles.container}>
+          <Header
+            scrollY={this.state.scrollY}
+            index={this.state.currentIndex}
+          ></Header>
+          {this.state.isBlured === true ? this.renderBlurPopup() : null}
 
-        <Swiper
-          style={{
-            marginTop: 60,
-          }}
-          ref={(ref) => (this.swiperRef = ref)}
-          scrollEventThrottle={16}
-          onScroll={Animated.event(
-            [
-              {
-                nativeEvent: {
-                  contentOffset: {
-                    x: this.state.scrollX,
-                  },
-                },
-              },
-            ],
-            { useNativeDriver: false }
-          )}
-          renderPagination={this.renderPagination}
-          loop={false}
-          onIndexChanged={(index) => {
-            if (index === 0 && this.state.currentIndex === 1) {
-              this.setState({
-                scrollY: this.state.dareScrollY,
-                currentIndex: 0,
-              });
-            } else if (index === 1 && this.state.currentIndex === 0) {
-              this.setState({
-                scrollY: this.state.instantScrollY,
-                currentIndex: 1,
-              });
-            }
-          }}
-          showsHorizontalScrollIndicator={false}
-        >
-          <ScrollView
+          <Swiper
             style={{
-              flex: 1,
+              marginTop: 60,
             }}
-            ref={(ref) => {
-              this.dareRef = ref;
-            }}
-            showsVerticalScrollIndicator={false}
+            ref={(ref) => (this.swiperRef = ref)}
             scrollEventThrottle={16}
             onScroll={Animated.event(
               [
                 {
                   nativeEvent: {
                     contentOffset: {
-                      y: this.state.dareScrollY,
+                      x: this.state.scrollX,
                     },
                   },
                 },
               ],
-              {
-                listener: (event) => {
-                  if (event.nativeEvent.contentOffset.y < 0) {
-                  }
-                  if (
-                    event.nativeEvent.contentOffset.y === 0 &&
-                    this.state.currentIndex === 0
-                  ) {
-                    this.instantRef.scrollTo({ y: 0 });
-                  } else if (this.state.currentIndex === 0) {
-                    this.instantRef.scrollTo({
-                      y:
-                        event.nativeEvent.contentOffset.y > 53
-                          ? 53
-                          : event.nativeEvent.contentOffset.y,
-                      animated: false,
-                    });
-                  }
-                },
-                useNativeDriver: false,
-              }
+              { useNativeDriver: false }
             )}
+            renderPagination={this.renderPagination}
+            loop={false}
+            onIndexChanged={(index) => {
+              if (index === 0 && this.state.currentIndex === 1) {
+                this.setState({
+                  scrollY: this.state.dareScrollY,
+                  currentIndex: 0,
+                });
+              } else if (index === 1 && this.state.currentIndex === 0) {
+                this.setState({
+                  scrollY: this.state.instantScrollY,
+                  currentIndex: 1,
+                });
+              }
+            }}
+            showsHorizontalScrollIndicator={false}
           >
-            <View
+            <ScrollView
               style={{
                 flex: 1,
-                flexWrap: "wrap",
-                flexDirection: "row",
               }}
-              onLayout={(event) => {
-                if (
-                  event.nativeEvent.layout.height !== HEIGHT + 3 &&
-                  event.nativeEvent.layout.height !== this.state.dareViewHeight
-                ) {
-                  this.setState({
-                    dareViewHeight: event.nativeEvent.layout.height,
-                  });
+              ref={(ref) => {
+                this.dareRef = ref;
+              }}
+              showsVerticalScrollIndicator={false}
+              scrollEventThrottle={16}
+              onScroll={Animated.event(
+                [
+                  {
+                    nativeEvent: {
+                      contentOffset: {
+                        y: this.state.dareScrollY,
+                      },
+                    },
+                  },
+                ],
+                {
+                  listener: (event) => {
+                    if (event.nativeEvent.contentOffset.y < 0) {
+                    }
+                    if (
+                      event.nativeEvent.contentOffset.y === 0 &&
+                      this.state.currentIndex === 0
+                    ) {
+                      this.instantRef.scrollTo({ y: 0 });
+                    } else if (this.state.currentIndex === 0) {
+                      this.instantRef.scrollTo({
+                        y:
+                          event.nativeEvent.contentOffset.y > 53
+                            ? 53
+                            : event.nativeEvent.contentOffset.y,
+                        animated: false,
+                      });
+                    }
+                  },
+                  useNativeDriver: false,
                 }
-              }}
+              )}
             >
               <View
                 style={{
-                  width: "100%",
-                  paddingBottom: 51,
-                  paddingLeft: 8,
-                  zIndex: 2,
-                  backgroundColor: 'rgb(240, 240, 240)',
+                  flex: 1,
+                  flexWrap: "wrap",
+                  flexDirection: "row",
                 }}
-              >
-                <Text style={styles.titleText}>Dare</Text>
-              </View>
-              {this.state.pendingDareList.map((dareData, i) => {
-                return (
-                  <DareIcon
-                    id={i}
-                    key={"DareIcon" + i}
-                    dareData={dareData}
-                    isStarted={false}
-                  />
-                );
-              })}
-              <View
-                style={{
-                  width: "100%",
-                  height: 100,
-                }}
-              ></View>
-              <View
-                style={{
-                  width: "100%",
-                  height: HEIGHT - this.state.dareViewHeight + 3,
-                }}
-              ></View>
-            </View>
-          </ScrollView>
-          <ScrollView
-            style={{
-              flex: 1,
-            }}
-            ref={(ref) => (this.instantRef = ref)}
-            scrollEventThrottle={16}
-            scrollIndicatorInsets={{
-              top: 100,
-              right: 0,
-              left: 0,
-              bottom: 60,
-            }}
-            onScroll={Animated.event(
-              [
-                {
-                  nativeEvent: {
-                    contentOffset: { y: this.state.instantScrollY },
-                  },
-                },
-              ],
-              {
-                listener: (event) => {
+                onLayout={(event) => {
                   if (
-                    event.nativeEvent.contentOffset.y === 0 &&
-                    this.state.currentIndex === 1
+                    event.nativeEvent.layout.height !== HEIGHT + 3 &&
+                    event.nativeEvent.layout.height !==
+                      this.state.dareViewHeight
                   ) {
-                    this.dareRef.scrollTo({ y: 0 });
-                  } else if (this.state.currentIndex === 1) {
-                    this.dareRef.scrollTo({
-                      y:
-                        event.nativeEvent.contentOffset.y > 53
-                          ? 53
-                          : event.nativeEvent.contentOffset.y,
-                      animated: false,
+                    this.setState({
+                      dareViewHeight: event.nativeEvent.layout.height,
                     });
                   }
-                },
-                useNativeDriver: false,
-              }
-            )}
-          >
-            <View
-              style={{ flex: 1, flexWrap: "wrap", flexDirection: "row" }}
-              onLayout={(event) => {
-                if (
-                  event.nativeEvent.layout.height !== HEIGHT + 3 &&
-                  event.nativeEvent.layout.height !==
-                    this.state.instantViewHeight
-                ) {
-                  this.setState({
-                    instantViewHeight: event.nativeEvent.layout.height,
-                  });
-                }
-              }}
-            >
-              <View
-                style={{
-                  width: "100%",
-                  marginBottom: 51,
-                  paddingLeft: 8,
-                  backgroundColor: 'rgb(240, 240, 240)',
                 }}
               >
-                <Text style={styles.titleText}>Instant</Text>
+                <View
+                  style={{
+                    width: "100%",
+                    paddingBottom: 51,
+                    paddingLeft: 8,
+                    zIndex: 2,
+                    backgroundColor: "rgb(240, 240, 240)",
+                  }}
+                >
+                  <Text style={styles.titleText}>Dare</Text>
+                </View>
+                {this.state.pendingDareList.map((dareData, i) => {
+                  return (
+                    <DareIcon
+                      id={i}
+                      key={"DareIcon" + i}
+                      dareData={dareData}
+                      isStarted={false}
+                    />
+                  );
+                })}
+                <View
+                  style={{
+                    width: "100%",
+                    height: 100,
+                  }}
+                ></View>
+                <View
+                  style={{
+                    width: "100%",
+                    height: HEIGHT - this.state.dareViewHeight + 3,
+                  }}
+                ></View>
               </View>
-              {this.state.pendingInstantList.map((instantData, i) => {
-                return (
-                  <InstantIcon
-                    key={"InstantIcon" + i}
-                    id={i}
-                    instantData={instantData}
-                    isPopup={false}
-                    isBlured={this.state.isBlured}
-                    setSelectedData={(data) => {
-                      this.setState({
-                        selectedData: data,
+            </ScrollView>
+            <ScrollView
+              style={{
+                flex: 1,
+              }}
+              ref={(ref) => (this.instantRef = ref)}
+              scrollEventThrottle={16}
+              scrollIndicatorInsets={{
+                top: 100,
+                right: 0,
+                left: 0,
+                bottom: 60,
+              }}
+              onScroll={Animated.event(
+                [
+                  {
+                    nativeEvent: {
+                      contentOffset: { y: this.state.instantScrollY },
+                    },
+                  },
+                ],
+                {
+                  listener: (event) => {
+                    if (
+                      event.nativeEvent.contentOffset.y === 0 &&
+                      this.state.currentIndex === 1
+                    ) {
+                      this.dareRef.scrollTo({ y: 0 });
+                    } else if (this.state.currentIndex === 1) {
+                      this.dareRef.scrollTo({
+                        y:
+                          event.nativeEvent.contentOffset.y > 53
+                            ? 53
+                            : event.nativeEvent.contentOffset.y,
+                        animated: false,
                       });
-                    }}
-                    setIsBlured={(toggle) => {
-                      this.setState({
-                        isBlured: toggle,
-                      });
-                    }}
-                  />
-                );
-              })}
+                    }
+                  },
+                  useNativeDriver: false,
+                }
+              )}
+            >
               <View
-                style={{
-                  width: "100%",
-                  height: 100,
+                style={{ flex: 1, flexWrap: "wrap", flexDirection: "row" }}
+                onLayout={(event) => {
+                  if (
+                    event.nativeEvent.layout.height !== HEIGHT + 3 &&
+                    event.nativeEvent.layout.height !==
+                      this.state.instantViewHeight
+                  ) {
+                    this.setState({
+                      instantViewHeight: event.nativeEvent.layout.height,
+                    });
+                  }
                 }}
-              ></View>
-              <View
-                style={{
-                  width: "100%",
-                  height: HEIGHT - this.state.instantViewHeight + 3,
-                }}
-              ></View>
-            </View>
-          </ScrollView>
-        </Swiper>
+              >
+                <View
+                  style={{
+                    width: "100%",
+                    marginBottom: 51,
+                    paddingLeft: 8,
+                    backgroundColor: "rgb(240, 240, 240)",
+                  }}
+                >
+                  <Text style={styles.titleText}>Instant</Text>
+                </View>
+                {this.state.pendingInstantList.map((instantData, i) => {
+                  return (
+                    <InstantIcon
+                      key={"InstantIcon" + i}
+                      id={i}
+                      instantData={instantData}
+                      isPopup={false}
+                      isBlured={this.state.isBlured}
+                      setSelectedData={(data) => {
+                        this.setState({
+                          selectedData: data,
+                        });
+                      }}
+                      setIsBlured={(toggle) => {
+                        this.setState({
+                          isBlured: toggle,
+                        });
+                      }}
+                    />
+                  );
+                })}
+                <View
+                  style={{
+                    width: "100%",
+                    height: 100,
+                  }}
+                ></View>
+                <View
+                  style={{
+                    width: "100%",
+                    height: HEIGHT - this.state.instantViewHeight + 3,
+                  }}
+                ></View>
+              </View>
+            </ScrollView>
+          </Swiper>
 
-        <StatusBar style="dark" />
-      </View>
-    );
+          <StatusBar style="dark" />
+        </View>
+      );
+    } else {
+      return <AppLoading />;
+    }
   }
 }
 
@@ -596,18 +606,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     zIndex: 0,
-    backgroundColor: 'rgb(240, 240, 240)',
-  },
-  title: {
-    width: "100%",
-    paddingLeft: 8,
-    position: "absolute",
-    top: 70,
+    backgroundColor: "rgb(240, 240, 240)",
   },
   titleText: {
+    lineHeight: 45,
     fontSize: 40,
-    fontWeight: "300",
     marginLeft: "4%",
+    fontFamily: "NotoSansKR-Light",
   },
   content: {
     width: "100%",

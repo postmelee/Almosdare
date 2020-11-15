@@ -13,7 +13,7 @@ import {
   TouchableHighlight,
   View,
 } from "react-native";
-import { LinearGradient } from 'expo-linear-gradient';
+import { LinearGradient } from "expo-linear-gradient";
 import UserIcon from "./userIcon-component";
 
 export default function DareIcon(props) {
@@ -21,86 +21,102 @@ export default function DareIcon(props) {
   //props should have
   //  date = {month, day}, location=String(""), time=String("xx:xx xm"), member = []
   return (
-    
     <TouchableHighlight
       style={styles.blockContainer}
       activeOpacity={0.7}
-      underlayColor='rgb(200, 200, 200)'
+      underlayColor="rgb(200, 200, 200)"
       onPress={() => navigation.navigate("DareView", { props })}
       onLongPress={() => alert(Math.round(Dimensions.get("window").height))}
     >
-      <View style={{flex: 1, borderRadius: 30, shadowColor: 'white', shadowOffset: {width: -4, height: -4}, shadowRadius: 3, shadowOpacity:0.8}}>
-      <LinearGradient colors={['#F0F0F0', '#F0F0F0']} style={{flex: 1, borderRadius: 30,
-    padding: 18, }}>
-      
-      <View style={styles.blockContent}>
-        <View style={styles.date}>
-          <SharedElement style={{}} id={props.id + "month"}>
-            <Text style={styles.month}>
-              {props.dareData.date.getMonth()}{" "}
-              <Text style={styles.day}>{props.dareData.date.getDate()}</Text>
-            </Text>
-          </SharedElement>
-        </View>
-        <View style={{ zIndex: 1 }}>
-          <SharedElement id={props.id + "location"}>
-            <Text numberOfLines={2} style={styles.location}>
-              {props.dareData.location}
-            </Text>
-          </SharedElement>
-          <SharedElement id={props.id + "time"}>
-            <Text style={styles.time}>
-              {props.dareData.date.getHours() +
-                ":" +
-                props.dareData.date.getMinutes()}
-            </Text>
-          </SharedElement>
-        </View>
-        <View style={{ zIndex: 1, flexDirection: "row", alignItems: "center" }}>
-          <View style={{width: "23%"}}>
-            <UserIcon id={props.id} fontSize={20} username={props.dareData.invited[0].name} />
-          </View>
-          <Text
-            style={{
-              color: "black",
-              fontSize: 25,
-              fontWeight: "500",
-              marginLeft: "5%",
-              marginBottom: "2%",
-            }}
-          >
-            +{props.dareData.invited.length - 1}
-          </Text>
-        </View>
-        {props.isStarted ? (
-          <>
+      <View
+        style={{
+          flex: 1,
+          borderRadius: 30,
+          shadowColor: "white",
+          shadowOffset: { width: -4, height: -4 },
+          shadowRadius: 3,
+          shadowOpacity: 0.8,
+        }}
+      >
+        <LinearGradient
+          colors={["#F0F0F0", "#F0F0F0"]}
+          style={{ flex: 1, borderRadius: 30, padding: 18 }}
+        >
+          <View style={styles.blockContent}>
+            <View style={styles.date}>
+              <SharedElement style={{}} id={props.id + "month"}>
+                <Text style={styles.month}>
+                  {props.dareData.date.getMonth()}{" "}
+                  <Text style={styles.day}>
+                    {props.dareData.date.getDate()}
+                  </Text>
+                </Text>
+              </SharedElement>
+            </View>
+            <View style={{ zIndex: 1 }}>
+              <SharedElement id={props.id + "location"}>
+                <Text numberOfLines={2} style={styles.location}>
+                  {props.dareData.location}
+                </Text>
+              </SharedElement>
+              <SharedElement id={props.id + "time"}>
+                <Text style={styles.time}>
+                  {props.dareData.date.getHours() +
+                    ":" +
+                    props.dareData.date.getMinutes()}
+                </Text>
+              </SharedElement>
+            </View>
             <View
-              style={{
-                zIndex: 0,
-                position: "absolute",
-                left: "40%",
-                right: 0,
-                bottom: -40,
-              }}
+              style={{ zIndex: 1, flexDirection: "row", alignItems: "center" }}
             >
+              <View style={{ width: "23%" }}>
+                <UserIcon
+                  id={props.id}
+                  fontSize={20}
+                  username={props.dareData.invited[0].name}
+                />
+              </View>
               <Text
                 style={{
-                  opacity: 0.2,
-                  color: "rgb(145, 168, 209)",
-                  fontSize: 200,
-                  fontStyle: "italic",
+                  color: "black",
+                  fontSize: 25,
+                  fontWeight: "500",
+                  marginLeft: "5%",
+                  marginBottom: "2%",
                 }}
               >
-                6
+                +{props.dareData.invited.length - 1}
               </Text>
             </View>
-          </>
-        ) : null}
+            {props.isStarted ? (
+              <>
+                <View
+                  style={{
+                    zIndex: 0,
+                    position: "absolute",
+                    left: "40%",
+                    right: 0,
+                    bottom: -40,
+                  }}
+                >
+                  <Text
+                    style={{
+                      opacity: 0.2,
+                      color: "rgb(145, 168, 209)",
+                      fontSize: 200,
+                      fontStyle: "italic",
+                    }}
+                  >
+                    6
+                  </Text>
+                </View>
+              </>
+            ) : null}
+          </View>
+        </LinearGradient>
       </View>
-    </LinearGradient>
-    </View>
     </TouchableHighlight>
-    
   );
 }
 
@@ -122,7 +138,7 @@ const styles = StyleSheet.create({
   },
   blockContainer: {
     borderRadius: 30,
-    
+
     width: "44%",
     aspectRatio: 1,
     marginLeft: "4%",
@@ -132,8 +148,9 @@ const styles = StyleSheet.create({
       width: 6,
       height: 6,
     },
-    shadowColor: 'grey',
-    shadowRadius: 4, shadowOpacity: 0.6
+    shadowColor: "grey",
+    shadowRadius: 4,
+    shadowOpacity: 0.6,
   },
   date: {
     zIndex: 1,
