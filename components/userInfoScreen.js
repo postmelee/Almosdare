@@ -2,6 +2,7 @@ import { StatusBar } from "expo-status-bar";
 import React, { useRef } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+import * as ImagePicker from 'expo-image-picker';
 import {
   StyleSheet,
   ScrollView,
@@ -9,6 +10,8 @@ import {
   Text,
   View,
   AsyncStorage,
+  TouchableWithoutFeedback,
+  Image
 } from "react-native";
 
 export default class UserInfoScreen extends React.Component {
@@ -21,8 +24,12 @@ export default class UserInfoScreen extends React.Component {
 
     this.getMyProfile = this.getMyProfile.bind(this);
     this.getMyTimeline = this.getMyTimeline.bind(this);
+    this.patchMyProfileImage = this.patchMyProfileImage.bind(this);
+    // this.pickImage = this.pickImage(this);
   }
 
+  
+  
   getColorByIdx = (idx) => {
     if (!idx) return "FFFFFF";
 
@@ -34,6 +41,33 @@ export default class UserInfoScreen extends React.Component {
     return "00000".substring(0, 6 - c.length) + c;
   };
 
+  // rest api
+  patchMyProfileImage = async (selectedImage) => {
+    const formData = new FormData();
+    formData.append('profileImage', selectedImage);
+
+    const res = await (
+      await fetch('https://almosdare.herokuapp.com/api/users/profileImage', {
+        method: 'PATCH',
+        headers: new Headers({
+          Authorization: await AsyncStorage.getItem("userToken"),
+          "Content-Type": "multipart/form-data",
+        }),
+        body: formData
+      })
+    ).json();
+
+    if (res.result === 1)
+      this.setState({
+        profile: {
+          idx: res.idx,
+          id: res.id,
+          nickname: res.nickname,
+          profileImageUrl : res.profileImageUrl,
+        },
+      });
+    else alert("[ERROR] getMyProfile : " + JSON.stringify(res));
+  }
   getMyProfile = async () => {
     const res = await (
       await fetch("https://almosdare.herokuapp.com/api/users", {
@@ -51,6 +85,7 @@ export default class UserInfoScreen extends React.Component {
           idx: res.idx,
           id: res.id,
           nickname: res.nickname,
+          profileImageUrl : res.profileImageUrl,
         },
       });
     else alert("[ERROR] getMyProfile : " + JSON.stringify(res));
@@ -69,11 +104,33 @@ export default class UserInfoScreen extends React.Component {
     if (res.result === 1) this.setState({ timeline: res.data });
     else alert("[ERROR] getMyTimeline : " + JSON.stringify(res));
   };
+  
+  pickImage = async() => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      // mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    if(result.cancelled) return;
+
+    const localUri = result.uri;
+    const filename = localUri.split('/').pop();
+
+    const match = /\.(\w+)$/.exec(filename);
+    const type = match ? `image/${match[1]}` : `image`;
+
+    this.patchMyProfileImage({ uri: localUri, name: filename, type });
+    return;
+  };
 
   async componentDidMount() {
     await this.getMyProfile();
     await this.getMyTimeline();
     // alert("Timeline: " + JSON.stringify(this.state.timeline));
+    // alert("profile: " + JSON.stringify(this.state.profile));
+
   }
 
   render() {
@@ -85,35 +142,40 @@ export default class UserInfoScreen extends React.Component {
         </View>
         <View style={styles.content}>
           <View style={styles.profile}>
-            <View
-              style={{
-                ...styles.profileIcon,
-                ...{
-                  backgroundColor: `#${this.getColorByIdx(
-                    myProfile === null ? "" : myProfile.idx
-                  )}`,
-                },
-              }}
-            >
-              <Text style={styles.profileIconNickname}>
-                {myProfile === null ? "" : this.state.profile.nickname}
-              </Text>
-            </View>
+            <TouchableWithoutFeedback onPress={() => {this.pickImage()}}>
+              <View
+                style={{
+                  ...styles.profileIcon,
+                  ...{
+                    backgroundColor: `#${this.getColorByIdx(
+                      myProfile === null ? "" : myProfile.idx
+                    )}`,
+                  },
+                }}
+              >
+                { myProfile && myProfile.profileImageUrl ?
+                  <Image source={{ uri: myProfile.profileImageUrl }} style={{ width: 200, height: 200 }} /> :
+                  <Text style={styles.profileIconNickname}>
+                    {myProfile === null ? "" : myProfile.nickname}
+                  </Text>
+                }
+              </View>
+            </TouchableWithoutFeedback>
             <View style={styles.profileInfo}>
               <View style={styles.profileInfoTextView}>
                 <Text style={{ fontSize: 20 }}>
-                  id : {myProfile === null ? "" : this.state.profile.id}
+                  id : {myProfile === null ? "" : myProfile.id}
                 </Text>
               </View>
               <View style={styles.profileInfoTextView}>
                 <Text style={{ fontSize: 20 }}>
                   nickname :{" "}
-                  {myProfile === null ? "" : this.state.profile.nickname}
+                  {myProfile === null ? "" : myProfile.nickname}
                 </Text>
               </View>
               <View style={styles.profileInfoTextView}>
                 <Text style={{ fontSize: 10 }}>
-                  idx : {myProfile === null ? "" : this.state.profile.idx}
+                  idx : {myProfile === null ? "" : myProfile.idx}
                 </Text>
               </View>
             </View>

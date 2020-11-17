@@ -42,7 +42,8 @@
     "react-native-web": "~0.11.7",
     "react-navigation": "^4.4.0",
     "react-navigation-shared-element": "^5.0.0-alpha1",
-    "socket.io-client": "2.1.1"
+    "socket.io-client": "2.1.1",
+    "expo-image-picker": "~8.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.8.6",
