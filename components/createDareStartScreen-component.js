@@ -2,12 +2,14 @@ import { StatusBar } from "expo-status-bar";
 import React from "react";
 import {
   Alert,
+  Animated,
   Modal,
   StyleSheet,
   Text,
   TextInput,
   TouchableHighlight,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
   FlatList,
   Dimensions,
@@ -15,6 +17,7 @@ import {
 } from "react-native";
 import UserIcon from "./userIcon-component";
 import { Entypo } from "@expo/vector-icons";
+import { EvilIcons } from "@expo/vector-icons";
 import LottieView from "lottie-react-native";
 import * as Font from "expo-font";
 
@@ -28,6 +31,7 @@ export default class CreateDareFirstScreen extends React.Component {
     super(props);
     this.state = {
       loaded: false,
+      appType: "Dare",
       userData: null,
       modalVisible: false,
       loadingVisible: false,
@@ -41,48 +45,161 @@ export default class CreateDareFirstScreen extends React.Component {
           idx: 0,
         },
         {
-          result: 1,
-          idx: "5f9c7ced7e18780017f4f8fd",
-          id: "01012345678",
-          nickname: "test",
+          idx: "5f9c4bab4513240017fc0d10",
+          id: "01047574218",
+          password: "xzaL46T9mo1zBvu2",
+          salt:
+            "4umSK47qiTH3Me6NslPqmY9JdJd/Ershtixuv9BgVKEyUdrA/xhvSCAJ+cx1CnDYn+x+yWIVqh3u32Dn68V8rQ==",
+          nickname: "Admin",
+          createdAt: "2020-10-30T17:21:47.875Z",
+          updatedAt: "2020-10-30T17:21:47.875Z",
+          __v: 0,
         },
         {
-          result: 1,
-          idx: "5f9c7ced7e18780017f4f8fd",
-          id: "01012345678",
-          nickname: "test",
+          idx: "5f9c76427e18780017f4f8fc",
+          id: "admin",
+          password: "TLb5lf6eSWeLco43",
+          salt:
+            "L2v++0xvTEYiYbvoTzOUaZCRxmR+tZppIMDkyBUoyptij9+uz+RMfUGd75LVxg3rjkDgI3C0zF8bA3H60mHR4g==",
+          nickname: "admin",
+          createdAt: "2020-10-30T20:23:30.798Z",
+          updatedAt: "2020-10-30T20:23:30.798Z",
+          __v: 0,
         },
         {
-          result: 1,
           idx: "5f9c7ced7e18780017f4f8fd",
           id: "01012345678",
+          password: "xEWxQnGwo4UEkMFR",
+          salt:
+            "UvieEiDL0/CH3EXp+kPURCGAVnfwhvwZqSj3/n7ayf/bzJPCudZdb+TuulXFz42zh+/Wj3ZBoBq/0jCdiRUQlg==",
           nickname: "test",
+          createdAt: "2020-10-30T20:51:57.617Z",
+          updatedAt: "2020-10-30T20:51:57.617Z",
+          __v: 0,
         },
         {
-          result: 1,
-          idx: "5f9c7ced7e18780017f4f8fd",
-          id: "01012345678",
-          nickname: "test",
+          idx: "5f9c907fac38d00017635332",
+          id: "01085517809",
+          password: "uqKMQm0p/ClRJUcb",
+          salt:
+            "PJmnHhsBGbGN1RFnfR5HY1jFllYkOspfGhm+xXbDmnmzhsm7wB275ikYlIwUkpZHbtD6xIxtEA/qbLj8JddrPQ==",
+          nickname: "oh jun seo",
+          createdAt: "2020-10-30T22:15:27.478Z",
+          updatedAt: "2020-10-30T22:15:27.478Z",
+          __v: 0,
         },
         {
-          result: 1,
-          idx: "5f9c7ced7e18780017f4f8fd",
-          id: "01012345678",
-          nickname: "test",
+          idx: "5fa9104c51bb0d0018b641de",
+          id: "01055246822",
+          password: "zGOmU+sWFnPUag36",
+          salt:
+            "dDwySDD+4xxqNq/Rwdnu6BiCdYVL192jmC/MYCISrLOCJEYQayLG/gq1/eTkve1Ds2vtyG6gagU/oYaD7Gd2Ig==",
+          nickname: "coco",
+          createdAt: "2020-11-09T09:47:56.804Z",
+          updatedAt: "2020-11-09T09:47:56.804Z",
+          __v: 0,
         },
         {
-          result: 1,
-          idx: "5f9c7ced7e18780017f4f8fd",
-          id: "01012345678",
-          nickname: "test",
+          idx: "5fad3cc5ed182b0018868fee",
+          id: "01011111111",
+          password: "NMoJla7Igx/i1ZL4",
+          salt:
+            "Gjw+NcWPs5Mahx+PgpEt1uI6jtrxfDttNU7S58a6JHvzc0kmIuzLZIi+cc2uxKKCI/yEpynof9uCUDP2PivCCQ==",
+          nickname: "test1",
+          createdAt: "2020-11-12T13:46:45.931Z",
+          updatedAt: "2020-11-12T13:46:45.931Z",
+          __v: 0,
         },
         {
-          result: 1,
-          idx: "5f9c7ced7e18780017f4f8fd",
-          id: "01012345678",
-          nickname: "test",
+          idx: "5fad3cd5ed182b0018868ff0",
+          id: "01022222222",
+          password: "tqrKsqYKVqhYrwvc",
+          salt:
+            "872OeIFWUPdQFmbwJmvC0i1ko2RsnECWo/AD/hTGg4TWaPVsXcp7VGPWOF9rt3ldSNCU7LxBaYKR0XaplGHMtA==",
+          nickname: "test2",
+          createdAt: "2020-11-12T13:47:01.795Z",
+          updatedAt: "2020-11-12T13:47:01.795Z",
+          __v: 0,
+        },
+        {
+          idx: "5fad3ce5ed182b0018868ff2",
+          id: "01033333333",
+          password: "lsXQJmTpdYmgFUQ/",
+          salt:
+            "LV9DHzVE1iNQuQYxM4AwHPvm7x79/CkCKRV0gqN3uNEU1Rja87nxdTUhaq+aKgGfSMljn4Zy54K7y6kZuhSnog==",
+          nickname: "test3",
+          createdAt: "2020-11-12T13:47:17.189Z",
+          updatedAt: "2020-11-12T13:47:17.189Z",
+          __v: 0,
+        },
+        {
+          idx: "5fad3cf8ed182b0018868ff4",
+          id: "01044444444",
+          password: "U+jAQv4WXVV6hGpV",
+          salt:
+            "u/y5nv7M3NDlDnvjgfist2VyRbD1Xd8huWUcqbc95aSSPFECPUD+OXxvQof7yUft1HmTg6zZbMzRKdQSA16xeQ==",
+          nickname: "test4",
+          createdAt: "2020-11-12T13:47:36.200Z",
+          updatedAt: "2020-11-12T13:47:36.200Z",
+          __v: 0,
+        },
+        {
+          idx: "5fad3d03ed182b0018868ff6",
+          id: "01055555555",
+          password: "IqGGH8I8RG3gSZU4",
+          salt:
+            "HCgKC2AYg2ZVZwL/jCRuakMyU38xEAU4dJuQmyej+ceEhB3rbAeTWLp44vpmxPf+ncU2v5KfEEX7qnB/29+dwg==",
+          nickname: "test5",
+          createdAt: "2020-11-12T13:47:47.095Z",
+          updatedAt: "2020-11-12T13:47:47.095Z",
+          __v: 0,
+        },
+        {
+          idx: "5fad3d0aed182b0018868ff8",
+          id: "01066666666",
+          password: "rQL/G61o6mn+/vrv",
+          salt:
+            "xY1QrER4nm+D7jU5rlnAmF/Fhd80q90o/QWcjyUnxi67AwjqJu8ThqAhPtNEcMQLQbXl6f96PC47njETmVFltA==",
+          nickname: "test6",
+          createdAt: "2020-11-12T13:47:54.814Z",
+          updatedAt: "2020-11-12T13:47:54.814Z",
+          __v: 0,
+        },
+        {
+          idx: "5fad3d11ed182b0018868ffa",
+          id: "01077777777",
+          password: "OORSWEKZD50EV330",
+          salt:
+            "C8ebzU4AKIXEds3lOGIZPDjpNhxF9L2yS+WrcHyuxzqM+8hCU4PZ6P/lOSiDsFtyXhFxH4O2ypdva97JU4LajA==",
+          nickname: "test7",
+          createdAt: "2020-11-12T13:48:01.787Z",
+          updatedAt: "2020-11-12T13:48:01.787Z",
+          __v: 0,
+        },
+        {
+          idx: "5fad3d1aed182b0018868ffc",
+          id: "01088888888",
+          password: "P4CTF+JRejP7ea22",
+          salt:
+            "QbQhXMVhT5oCqOmpAsmQRe1hPeG19AuKTPYpIB/Q6X3I6JTAzOOS5eW43NDnY65sR+zdjB4mQZ+o32EwzACVjA==",
+          nickname: "test8",
+          createdAt: "2020-11-12T13:48:10.375Z",
+          updatedAt: "2020-11-12T13:48:10.375Z",
+          __v: 0,
+        },
+        {
+          idx: "5fad3d21ed182b0018868ffe",
+          id: "01099999999",
+          password: "wx9P6BFzzfsLE6hc",
+          salt:
+            "cS6vNRgCf1Lu1gOQmtJojDJxsbmOqLo45Ae3k1HkHdS1rvGLj62doAOyg+ODVjupeKSxJotdA3P7os87WFPIng==",
+          nickname: "test9",
+          createdAt: "2020-11-12T13:48:17.512Z",
+          updatedAt: "2020-11-12T13:48:17.512Z",
+          __v: 0,
         },
       ],
+      navbarX: new Animated.Value(0),
     };
   }
 
@@ -321,8 +438,56 @@ export default class CreateDareFirstScreen extends React.Component {
               </View>
             </View>
           </Modal>
+          <View style={styles.header}>
+            <TouchableWithoutFeedback
+              onPress={() => {
+                this.props.navigation.goBack();
+              }}
+            >
+              <View
+                style={{
+                  width: 100,
+                }}
+              >
+                <EvilIcons name="close" size={37} color="black" />
+              </View>
+            </TouchableWithoutFeedback>
+            <Text style={{ fontSize: 20 }}>{this.state.appType}</Text>
+            {this.state.appType === "Dare" ? (
+              <TouchableWithoutFeedback
+                onPress={() => {
+                  this.props.navigation.navigate("First");
+                }}
+              >
+                <View
+                  style={{
+                    width: 100,
+                    alignItems: "flex-end",
+                  }}
+                >
+                  <Text style={styles.headerButton}>Next</Text>
+                </View>
+              </TouchableWithoutFeedback>
+            ) : (
+              <TouchableWithoutFeedback
+                onPress={() => {
+                  this.createInstant();
+                }}
+              >
+                <View
+                  style={{
+                    width: 100,
+                    alignItems: "flex-end",
+                  }}
+                >
+                  <Text style={styles.headerButton}>Done</Text>
+                </View>
+              </TouchableWithoutFeedback>
+            )}
+          </View>
           <View style={styles.title}>
             <Text style={styles.titleText}>Create</Text>
+
             <Text style={styles.descriptionText}>
               Choose members to create an appointment.
             </Text>
@@ -450,15 +615,73 @@ export default class CreateDareFirstScreen extends React.Component {
                     <></>
                   );
                 } else {
-                  return (
+                  return this.state.members.some((e) => e.idx === item.idx) ? (
                     <TouchableOpacity
-                      style={styles.listItem}
+                      style={[
+                        styles.listItem,
+                        {
+                          borderColor: "grey",
+                          borderWidth: 1,
+                          backgroundColor: "rgb(220, 220, 220)",
+                        },
+                      ]}
+                      onPress={() => {
+                        this.removeMember(item);
+                      }}
+                    >
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                        }}
+                      >
+                        <View style={{ width: 60, aspectRatio: 1 }}>
+                          <UserIcon id={"1"} username={""} fontSize={20} />
+                        </View>
+                        <View style={{ marginLeft: 10 }}>
+                          <Text
+                            style={{
+                              fontSize: 20,
+                            }}
+                          >
+                            {item.nickname}
+                          </Text>
+                          <Text
+                            style={{
+                              color: "rgb(130, 130, 130)",
+                            }}
+                          >
+                            Hi everyone, It's me melee!
+                          </Text>
+                        </View>
+                      </View>
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity
+                      style={[
+                        styles.listItem,
+                        {
+                          borderColor: "black",
+                          borderWidth: 1,
+                          shadowColor: "black",
+                          shadowOffset: {
+                            height: 1,
+                            width: 1,
+                          },
+                          shadowRadius: 1,
+                          shadowOpacity: 1,
+                        },
+                      ]}
                       onPress={() => {
                         this.addMember(item);
                       }}
                     >
                       <View
-                        style={{ flexDirection: "row", alignItems: "center" }}
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          backgroundColor: "rgb(240, 240, 240)",
+                        }}
                       >
                         <View style={{ width: 60, aspectRatio: 1 }}>
                           <UserIcon id={"1"} username={""} fontSize={20} />
@@ -487,21 +710,86 @@ export default class CreateDareFirstScreen extends React.Component {
             ></FlatList>
           </View>
           <View style={styles.navbar}>
+            <Animated.View
+              style={{
+                position: "absolute",
+                width: Dimensions.get("window").width / 2,
+                borderWidth: 1,
+                borderColor: "black",
+                top: 0,
+                left: 0,
+                transform: [
+                  {
+                    translateX: this.state.navbarX.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [0, Dimensions.get("window").width / 2],
+                      extrapolate: "clamp",
+                    }),
+                  },
+                ],
+              }}
+            />
+
             <TouchableOpacity
               style={styles.navbarButton}
-              onPress={this.createInstant}
+              onPress={() => {
+                this.setState({
+                  appType: "Dare",
+                });
+                Animated.timing(this.state.navbarX, {
+                  toValue: 0,
+                  delay: 0,
+                  duration: 200,
+                  useNativeDriver: false,
+                }).start();
+              }}
             >
-              <Entypo name="flash" size={30} color="black" />
-              <Text>Instant</Text>
+              <Animated.View
+                style={{
+                  width: "100%",
+                  alignItems: "center",
+
+                  opacity: this.state.navbarX.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [1, 0.1],
+                    extrapolate: "clamp",
+                  }),
+                }}
+              >
+                <Entypo name="clock" size={30} color="black" />
+              </Animated.View>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.navbarButton}
-              onPress={this.createInstant}
+              onPress={() => {
+                this.setState({
+                  appType: "Instant",
+                });
+                Animated.timing(this.state.navbarX, {
+                  toValue: 1,
+                  delay: 0,
+                  duration: 200,
+                  useNativeDriver: false,
+                }).start();
+              }}
             >
-              <Entypo name="clock" size={30} color="black" />
-              <Text>Dare</Text>
+              <Animated.View
+                style={{
+                  width: "100%",
+                  alignItems: "center",
+
+                  opacity: this.state.navbarX.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [0.1, 1],
+                    extrapolate: "clamp",
+                  }),
+                }}
+              >
+                <Entypo name="flash" size={30} color="black" />
+              </Animated.View>
             </TouchableOpacity>
           </View>
+          <StatusBar hidden={true} />
         </View>
       );
     } else {
@@ -514,6 +802,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
+    backgroundColor: "rgb(240, 240, 240)",
   },
   loadingView: {
     flex: 1,
@@ -537,7 +826,7 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingTop: 5,
-    height: "55%",
+    flex: 1,
     width: "100%",
   },
   searchBar: {
@@ -549,6 +838,24 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     borderColor: "black",
   },
+  header: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+
+    height: 45,
+    justifyContent: "space-between",
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 8,
+    paddingHorizontal: 12,
+  },
+  headerButton: {
+    fontSize: 20,
+    fontWeight: "400",
+    color: "#3465d9",
+  },
   searchInput: {
     height: 40,
     paddingLeft: 9,
@@ -558,14 +865,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
-    paddingTop: 5,
+    padding: 5,
     width: "100%",
     borderColor: "rgba(0, 0, 0, 0.1)",
     borderTopWidth: 1,
+    height: 45,
   },
   navbarButton: {
     elevation: 2,
     alignItems: "center",
+    width: "50%",
   },
   memberIcon: {
     height: 90,
@@ -604,7 +913,7 @@ const styles = StyleSheet.create({
   },
   title: {
     paddingVertical: 10,
-    marginTop: 22,
+    marginTop: 33,
     width: "100%",
     alignItems: "center",
   },
@@ -622,13 +931,13 @@ const styles = StyleSheet.create({
   },
   listItem: {
     width: Dimensions.get("window").width * 0.85,
+
     height: 70,
     margin: 4,
     padding: 5,
     borderRadius: 10,
-    borderColor: "black",
-    borderWidth: 1,
     justifyContent: "center",
+    backgroundColor: "rgb(240, 240, 240)",
   },
   searchButton: {
     alignContent: "center",

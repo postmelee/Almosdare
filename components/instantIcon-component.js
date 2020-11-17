@@ -48,44 +48,89 @@ export default class InstantIcon extends React.Component {
         underlayColor="#DDDDDD"
         onPress={() => {
           this.props.isPopup
-          ? this.props.setSelectedData(null)
-          : this.props.setSelectedData(this.props.instantData);
-        this.props.setIsBlured(!this.props.isBlured);
+            ? this.props.setSelectedData(null)
+            : this.props.setSelectedData(this.props.instantData);
+          this.props.setIsBlured(!this.props.isBlured);
         }}
         onLongPress={() => alert(Math.round(Dimensions.get("window").height))}
       >
-      <View style={{borderRadius: 20, flex: 1,
-    backgroundColor: 'rgb(240, 240, 240)',
-    shadowColor: 'white', shadowOffset: {width: -4, height: -4}, shadowRadius: 3, shadowOpacity:0.8}}>
-        <View style={styles.block}>
-          {this.props.instantData &&
-            this.props.instantData.invited.map((userData, i) => {
-              return (
-                <View key={"InvitedUser" + i} style={{marginLeft: 5, paddingTop:2, width: "18%", aspectRatio:0.85, alignItems: 'center'}}>
-                <UserIcon
-                  id={this.props.id}
-                  username={userData.nickname}
-                  fontSize={20}
-                />
-                <Text numberOfLines={1} ellipsizeMode='tail' style={{ marginTop: 2,fontSize: 11, textAlign: 'center'}}>{userData.nickname}</Text>
-                </View>
-
-              );
-            })}
-          {this.props.instantData &&
-            this.props.instantData.pending.map((userData, i) => {
-              return (
-                <View key={"PendingUser" + i} style={{marginLeft: 5, paddingTop:2, width: "18%", aspectRatio:0.85, alignItems: 'center'}}>
-                <UserIcon
-                  id={this.props.id}
-                  username={userData.nickname}
-                  fontSize={20}
-                />
-                <Text numberOfLines={1} ellipsizeMode='tail' style={{ marginTop: 2,fontSize: 11, textAlign: 'center'}}>{userData.nickname}</Text>
-                </View>
-              );
-            })}
-        </View>
+        <View
+          style={{
+            borderRadius: 20,
+            flex: 1,
+            backgroundColor: "rgb(240, 240, 240)",
+            shadowColor: "white",
+            shadowOffset: { width: -4, height: -4 },
+            shadowRadius: 3,
+            shadowOpacity: 0.8,
+          }}
+        >
+          <View style={styles.block}>
+            {this.props.instantData &&
+              this.props.instantData.invited.map((userData, i) => {
+                return (
+                  <View
+                    key={"InvitedUser" + i}
+                    style={{
+                      marginLeft: 5,
+                      paddingTop: 2,
+                      width: "18%",
+                      aspectRatio: 0.85,
+                      alignItems: "center",
+                    }}
+                  >
+                    <UserIcon
+                      id={this.props.id}
+                      username={userData.nickname}
+                      fontSize={20}
+                    />
+                    <Text
+                      numberOfLines={1}
+                      ellipsizeMode="tail"
+                      style={{
+                        marginTop: 2,
+                        fontSize: 13,
+                        textAlign: "center",
+                      }}
+                    >
+                      {userData.nickname}
+                    </Text>
+                  </View>
+                );
+              })}
+            {this.props.instantData &&
+              this.props.instantData.pending.map((userData, i) => {
+                return (
+                  <View
+                    key={"PendingUser" + i}
+                    style={{
+                      marginLeft: 5,
+                      paddingTop: 2,
+                      width: "18%",
+                      aspectRatio: 0.85,
+                      alignItems: "center",
+                    }}
+                  >
+                    <UserIcon
+                      id={this.props.id}
+                      username={userData.nickname}
+                      fontSize={20}
+                    />
+                    <Text
+                      numberOfLines={1}
+                      ellipsizeMode="tail"
+                      style={{
+                        marginTop: 2,
+                        fontSize: 13,
+                        textAlign: "center",
+                      }}
+                    >
+                      {userData.nickname}
+                    </Text>
+                  </View>
+                );
+              })}
+          </View>
         </View>
       </TouchableHighlight>
     );
@@ -95,20 +140,20 @@ export default class InstantIcon extends React.Component {
 const styles = StyleSheet.create({
   container: {
     borderRadius: 30,
-    
+
     width: "92%",
     height: Dimensions.get("window").width * 0.2,
     marginLeft: "4%",
     marginRight: "4%",
     zIndex: 2,
-    marginTop: '4%',
+    marginTop: "4%",
     shadowOffset: {
       width: 6,
       height: 6,
     },
-    shadowColor: 'grey',
-    shadowRadius: 4, shadowOpacity: 0.6
-    
+    shadowColor: "grey",
+    shadowRadius: 4,
+    shadowOpacity: 0.6,
   },
   block: {
     flexDirection: "row",
