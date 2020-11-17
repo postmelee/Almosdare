@@ -313,7 +313,7 @@ export default class Home extends React.Component {
               opacity: imageOpacityLeft,
             }}
           >
-            <Entypo name="flash" size={30} color="black" />
+            <Entypo name="clock" size={30} color="black" />
           </Animated.View>
         </TouchableWithoutFeedback>
         <TouchableWithoutFeedback
@@ -329,7 +329,7 @@ export default class Home extends React.Component {
               opacity: imageOpacityRight,
             }}
           >
-            <Entypo name="clock" size={30} color="black" />
+            <Entypo name="flash" size={30} color="black" />
           </Animated.View>
         </TouchableWithoutFeedback>
         <Animated.View

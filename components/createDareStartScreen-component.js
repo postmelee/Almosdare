@@ -15,6 +15,7 @@ import {
   Dimensions,
   AsyncStorage,
 } from "react-native";
+import { SharedElement } from "react-navigation-shared-element";
 import UserIcon from "./userIcon-component";
 import { Entypo } from "@expo/vector-icons";
 import { EvilIcons } from "@expo/vector-icons";
@@ -203,6 +204,10 @@ export default class CreateDareFirstScreen extends React.Component {
     };
   }
 
+  static sharedElements = (navigation, otherNavigation, showing) => {
+    return [{ id: "members" }, { id: "header" }];
+  };
+
   fetchData = async () => {
     this.getUsers();
     await Font.loadAsync(customFonts);
@@ -262,7 +267,7 @@ export default class CreateDareFirstScreen extends React.Component {
       return -1;
     } else {
       this.setState({
-        members: [...this.state.members, newMember],
+        members: [newMember, ...this.state.members],
         // memberNicknames: [...this.state.memberNicknames, this.state.queryResult.nickname]
       });
       return 1;
@@ -438,53 +443,67 @@ export default class CreateDareFirstScreen extends React.Component {
               </View>
             </View>
           </Modal>
-          <View style={styles.header}>
-            <TouchableWithoutFeedback
-              onPress={() => {
-                this.props.navigation.goBack();
-              }}
-            >
-              <View
-                style={{
-                  width: 100,
-                }}
-              >
-                <EvilIcons name="close" size={37} color="black" />
-              </View>
-            </TouchableWithoutFeedback>
-            <Text style={{ fontSize: 20 }}>{this.state.appType}</Text>
-            {this.state.appType === "Dare" ? (
+          <SharedElement
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              zIndex: 1,
+              height: 50,
+            }}
+            id="header"
+          >
+            <View style={styles.header}>
               <TouchableWithoutFeedback
                 onPress={() => {
-                  this.props.navigation.navigate("First");
+                  this.props.navigation.goBack();
                 }}
               >
                 <View
                   style={{
                     width: 100,
-                    alignItems: "flex-end",
                   }}
                 >
-                  <Text style={styles.headerButton}>Next</Text>
+                  <EvilIcons name="close" size={37} color="black" />
                 </View>
               </TouchableWithoutFeedback>
-            ) : (
-              <TouchableWithoutFeedback
-                onPress={() => {
-                  this.createInstant();
-                }}
-              >
-                <View
-                  style={{
-                    width: 100,
-                    alignItems: "flex-end",
+              <Text style={{ fontSize: 20 }}>{this.state.appType}</Text>
+              {this.state.appType === "Dare" ? (
+                <TouchableWithoutFeedback
+                  onPress={() => {
+                    this.props.navigation.navigate("First", {
+                      members: this.state.members,
+                    });
                   }}
                 >
-                  <Text style={styles.headerButton}>Done</Text>
-                </View>
-              </TouchableWithoutFeedback>
-            )}
-          </View>
+                  <View
+                    style={{
+                      width: 100,
+                      alignItems: "flex-end",
+                    }}
+                  >
+                    <Text style={styles.headerButton}>Next</Text>
+                  </View>
+                </TouchableWithoutFeedback>
+              ) : (
+                <TouchableWithoutFeedback
+                  onPress={() => {
+                    this.createInstant();
+                  }}
+                >
+                  <View
+                    style={{
+                      width: 100,
+                      alignItems: "flex-end",
+                    }}
+                  >
+                    <Text style={styles.headerButton}>Done</Text>
+                  </View>
+                </TouchableWithoutFeedback>
+              )}
+            </View>
+          </SharedElement>
           <View style={styles.title}>
             <Text style={styles.titleText}>Create</Text>
 
@@ -492,103 +511,120 @@ export default class CreateDareFirstScreen extends React.Component {
               Choose members to create an appointment.
             </Text>
           </View>
-          <View style={styles.memberSection}>
-            <FlatList
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{
-                flexGrow: 1,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-              data={this.state.members}
-              horizontal
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={({ item }) => {
-                if (item == this.state.userData) {
-                  return (
-                    <TouchableOpacity style={styles.memberIcon}>
-                      <View
-                        style={{
-                          width: 90,
-                          aspectRatio: 1,
-                          alignItems: "center",
-                        }}
-                      >
-                        <UserIcon id={"1"} username={""} fontSize={20} />
-                        <Text
-                          numberOfLines={1}
-                          ellipsizeMode="tail"
+          <SharedElement style={{ width: "100%" }} id="members">
+            <View style={styles.memberSection}>
+              <FlatList
+                showsHorizontalScrollIndicator={true}
+                indicatorStyle={"dark"}
+                contentContainerStyle={{
+                  flexGrow: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+                data={this.state.members}
+                horizontal
+                keyExtractor={(item, index) => index.toString()}
+                renderItem={({ item }) => {
+                  if (item == this.state.userData) {
+                    return (
+                      <TouchableOpacity style={styles.memberIcon}>
+                        <View
                           style={{
-                            marginTop: 5,
-                            fontSize: 15,
-                            textAlign: "center",
+                            width: 90,
+                            aspectRatio: 1,
+                            alignItems: "center",
                           }}
                         >
-                          {item.nickname}
-                        </Text>
-                      </View>
-                    </TouchableOpacity>
-                  );
-                } else {
-                  return (
-                    <TouchableOpacity
-                      style={styles.memberIcon}
-                      onPress={() => {
-                        this.removeMember(item);
-                      }}
-                    >
-                      <View
-                        style={{
-                          width: 90,
-                          aspectRatio: 1,
-                          alignItems: "center",
+                          <UserIcon id={"1"} username={""} fontSize={20} />
+                          <Text
+                            numberOfLines={1}
+                            ellipsizeMode="tail"
+                            style={{
+                              marginTop: 5,
+                              fontSize: 15,
+                              textAlign: "center",
+                            }}
+                          >
+                            {item.nickname}
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                    );
+                  } else {
+                    return (
+                      <TouchableOpacity
+                        style={styles.memberIcon}
+                        onPress={() => {
+                          this.removeMember(item);
                         }}
                       >
-                        <UserIcon id={"1"} username={""} fontSize={20} />
-                        <Text
-                          numberOfLines={1}
-                          ellipsizeMode="tail"
+                        <View
                           style={{
-                            marginTop: 5,
-                            fontSize: 15,
-                            textAlign: "center",
+                            width: 90,
+                            aspectRatio: 1,
+                            alignItems: "center",
                           }}
                         >
-                          {item.nickname}
-                        </Text>
-                      </View>
-                    </TouchableOpacity>
-                  );
-                }
-              }}
-            ></FlatList>
-          </View>
-
-          <View style={styles.searchBar}>
-            <TextInput
-              clearButtonMode={"always"}
-              keyboardType={"phone-pad"}
-              style={styles.searchInput}
-              placeholder="Search"
-              onChangeText={(text) => {
-                if (text !== "") {
-                  this.setState({
-                    searchSuggest: true,
-                    query: text,
-                  });
-                } else {
-                  this.setState({
-                    searchSuggest: false,
-                    query: text,
-                  });
-                }
-              }}
-            />
+                          <UserIcon id={"1"} username={""} fontSize={20} />
+                          <Text
+                            numberOfLines={1}
+                            ellipsizeMode="tail"
+                            style={{
+                              marginTop: 5,
+                              fontSize: 15,
+                              textAlign: "center",
+                            }}
+                          >
+                            {item.nickname}
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                    );
+                  }
+                }}
+              ></FlatList>
+            </View>
+          </SharedElement>
+          <View
+            style={{
+              width: "93%",
+              alignItems: "center",
+              marginTop: 9,
+              zIndex: 1,
+              shadowOffset: {
+                height: -5,
+              },
+              shadowColor: "white",
+              shadowRadius: 2,
+              shadowOpacity: 0.5,
+            }}
+          >
+            <View style={styles.searchBar}>
+              <TextInput
+                clearButtonMode={"always"}
+                keyboardType={"phone-pad"}
+                style={styles.searchInput}
+                placeholder="Search"
+                onChangeText={(text) => {
+                  if (text !== "") {
+                    this.setState({
+                      searchSuggest: true,
+                      query: text,
+                    });
+                  } else {
+                    this.setState({
+                      searchSuggest: false,
+                      query: text,
+                    });
+                  }
+                }}
+              />
+            </View>
           </View>
           <View style={styles.content}>
             <FlatList
               showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{ alignItems: "center" }}
+              contentContainerStyle={{ alignItems: "center", paddingTop: 7 }}
               data={this.state.listItems}
               keyExtractor={(item, index) => index.toString()}
               renderItem={({ item }) => {
@@ -825,31 +861,33 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   content: {
-    paddingTop: 5,
     flex: 1,
     width: "100%",
   },
   searchBar: {
     flexDirection: "row",
-    width: "90%",
-    marginTop: 9,
-    justifyContent: "space-evenly",
-    borderWidth: 1,
-    borderRadius: 50,
-    borderColor: "black",
-  },
-  header: {
-    position: "absolute",
-    top: 0,
-    left: 0,
     width: "100%",
 
-    height: 45,
+    justifyContent: "space-evenly",
+
+    borderRadius: 50,
+    borderColor: "black",
+    shadowOffset: {
+      height: 5,
+    },
+    zIndex: 1,
+    backgroundColor: "rgb(240, 240, 240)",
+    shadowColor: "black",
+    shadowOpacity: 0.5,
+    shadowRadius: 2,
+  },
+  header: {
     justifyContent: "space-between",
     flexDirection: "row",
     alignItems: "center",
     padding: 8,
     paddingHorizontal: 12,
+    height: 50,
   },
   headerButton: {
     fontSize: 20,
@@ -884,8 +922,8 @@ const styles = StyleSheet.create({
   },
   memberSection: {
     width: "100%",
-    height: 100,
-    padding: 5,
+    height: 110,
+
     borderColor: "rgba(0, 0, 0, 0.1)",
     borderBottomWidth: 1,
   },
