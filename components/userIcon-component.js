@@ -12,6 +12,7 @@ import {
   Dimensions,
   TouchableHighlight,
   View,
+  Image
 } from "react-native";
 
 export default function UserIcon(props) {
@@ -62,33 +63,50 @@ export default function UserIcon(props) {
         borderColor: "rgb(145, 168, 209)",
       }}
     >
-      <View
-        style={{
-          flex: 1,
-          alignItems: "center",
-          justifyContent: "center",
-          aspectRatio: 1,
-          padding: 7,
-          borderRadius: 100,
-          backgroundColor: randomColor(props.id),
-          marginRight: 11,
-        }}
-      >
-        <Text
+      { props.profileImageUrl ?
+        <Image
+          source={{ uri: props.profileImageUrl }}
           style={{
-            color: "black",
-            fontSize: props.fontSize,
-            textAlign: "center",
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center",
+            aspectRatio: 1,
+            padding: 7,
+            borderRadius: 100,
+            marginRight: 11,
           }}
-          allowFontScaling
-          adjustsFontSizeToFit={true}
-          minimumFontScale={0.5}
-          numberOfLines={1}
-          ellipsizeMode="tail"
         >
-          {props.username}
-        </Text>
-      </View>
+        </Image>
+        :
+        <View
+          style={{
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center",
+            aspectRatio: 1,
+            padding: 7,
+            borderRadius: 100,
+            backgroundColor: randomColor(props.id),
+            marginRight: 11,
+          }}
+        >
+          <Text
+            style={{
+              color: "black",
+              fontSize: props.fontSize,
+              textAlign: "center",
+            }}
+            allowFontScaling
+            adjustsFontSizeToFit={true}
+            minimumFontScale={0.5}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
+            {props.username}
+          </Text>
+        </View>
+      }
+        
     </View>
   );
 }

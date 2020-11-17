@@ -81,6 +81,7 @@ export default class InstantIcon extends React.Component {
                   >
                     <UserIcon
                       id={this.props.id}
+                      profileImageUrl={userData.profileImageUrl}
                       username={userData.nickname}
                       fontSize={20}
                     />
@@ -113,6 +114,7 @@ export default class InstantIcon extends React.Component {
                   >
                     <UserIcon
                       id={this.props.id}
+                      profileImageUrl={userData.profileImageUrl}
                       username={userData.nickname}
                       fontSize={20}
                     />
