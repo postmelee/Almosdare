@@ -19,6 +19,38 @@ import UserIcon from "./userIcon-component";
 export default function DareIcon(props) {
   const navigation = useNavigation();
   const date = new Date(props.dareData.date);
+
+  const renderMinute = () => {
+    let minute =
+      date.getMinutes() < 10
+        ? "0" + String(date.getMinutes())
+        : String(date.getMinutes());
+    return minute;
+  };
+
+  const renderHour = () => {
+    let hour = date.getHours();
+    let noonStr = "";
+    let hourStr = "";
+    if (hour > 12) {
+      if (hour > 21) {
+        hourStr = String(hour - 12);
+      } else {
+        hourStr = "0" + String(hour - 12);
+      }
+      noonStr = "PM";
+    } else if (hour < 10) {
+      hourStr = "0" + String(hour);
+      noonStr = "AM";
+    } else {
+      hourStr = String(hour);
+      noonStr = "AM";
+    }
+    return {
+      hourStr,
+      noonStr,
+    };
+  };
   //props should have
   //  date = {month, day}, location=String(""), time=String("xx:xx xm"), member = []
   return (
@@ -49,38 +81,39 @@ export default function DareIcon(props) {
               </SharedElement>
             </View>
             <View style={{ zIndex: 1 }}>
-              <SharedElement id={props.id + "location"}>
-                <Text numberOfLines={2} style={styles.location}>
+              <SharedElement style={{ height: 55 }} id={props.id + "location"}>
+                <Text numberOfLines={1} style={styles.location}>
                   {props.dareData.place.name}
                 </Text>
+                <Text numberOfLines={2} style={styles.address}>
+                  경기도 이천시 마장면 오천리{" "}
+                </Text>
               </SharedElement>
-              <SharedElement id={props.id + "time"}>
+              <SharedElement
+                style={{ alignSelf: "flex-end" }}
+                id={props.id + "time"}
+              >
                 <Text style={styles.time}>
-                  {date.getHours() + ":" + date.getMinutes()}
+                  {renderHour().hourStr + ":" + renderMinute()}
                 </Text>
               </SharedElement>
             </View>
             <View
               style={{ zIndex: 1, flexDirection: "row", alignItems: "center" }}
             >
-              <View style={{ width: "23%" }}>
-                <UserIcon
-                  id={props.id}
-                  fontSize={20}
-                  username={props.dareData.invited[0].nickname}
-                />
-              </View>
-              <Text
-                style={{
-                  color: "black",
-                  fontSize: 25,
-                  fontWeight: "500",
-                  marginLeft: "5%",
-                  marginBottom: "2%",
-                }}
-              >
-                +{props.dareData.invited.length - 1}
-              </Text>
+              {props.dareData.invited.length > 1 ? (
+                <Text
+                  style={{
+                    color: "black",
+                    fontSize: 25,
+                    fontWeight: "500",
+                    marginLeft: "5%",
+                    marginBottom: "2%",
+                  }}
+                >
+                  +{props.dareData.invited.length - 1}
+                </Text>
+              ) : null}
             </View>
             {props.isStarted ? (
               <>
@@ -126,7 +159,6 @@ function randomColor() {
 }
 const styles = StyleSheet.create({
   blockContent: {
-    justifyContent: "space-between",
     flex: 1,
   },
   blockContainer: {
@@ -154,12 +186,19 @@ const styles = StyleSheet.create({
     color: "black",
   },
   location: {
-    fontSize: 17,
-    fontWeight: "600",
+    fontSize: 19,
+    fontWeight: "700",
     color: "black",
+    marginTop: 3,
+  },
+  address: {
+    fontSize: 16,
+    fontWeight: "500",
+    color: "rgb(90, 90, 90)",
+    marginTop: 5,
   },
   time: {
-    fontSize: 20,
+    fontSize: 30,
     fontWeight: "400",
     color: "gray",
   },

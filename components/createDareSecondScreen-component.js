@@ -291,6 +291,7 @@ export default class CreateDareSecondScreen extends React.Component {
                         date: this.props.route.params.date,
                         place: {
                           name: this.state.selectedPlace,
+                          address: this.state.selectedAddress,
                           latitude: this.state.destLat,
                           longitude: this.state.longitude,
                         },

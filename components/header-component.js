@@ -42,6 +42,6 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 18,
-    fontWeight: "400",
+    fontWeight: "500",
   },
 });

@@ -19,7 +19,7 @@ export default function DareViewScreen({ route }) {
   const titleScale = useRef(new Animated.Value(0)).current;
 
   const containerScale = useRef(new Animated.Value(0)).current;
-
+  const date = new Date(props.dareData.date);
   React.useEffect(() => {
     Animated.timing(headerScale, {
       toValue: 1,
@@ -67,7 +67,7 @@ export default function DareViewScreen({ route }) {
                   },
                 ]}
               >
-                {props.dareData.date.getMonth()}{" "}
+                {date.getMonth()}{" "}
                 <Animated.Text
                   style={[
                     styles.day,
@@ -79,7 +79,7 @@ export default function DareViewScreen({ route }) {
                     },
                   ]}
                 >
-                  {props.dareData.date.getDate()}
+                  {date.getDate()}
                 </Animated.Text>
               </Animated.Text>
             </SharedElement>
@@ -98,7 +98,7 @@ export default function DareViewScreen({ route }) {
                   },
                 ]}
               >
-                {props.dareData.location}
+                {props.dareData.place}
               </Animated.Text>
             </SharedElement>
             <SharedElement id={props.id + "time"}>
@@ -113,9 +113,7 @@ export default function DareViewScreen({ route }) {
                   },
                 ]}
               >
-                {props.dareData.date.getHours() +
-                  ":" +
-                  props.dareData.date.getMinutes()}
+                {date.getHours() + ":" + date.getMinutes()}
               </Animated.Text>
             </SharedElement>
           </View>

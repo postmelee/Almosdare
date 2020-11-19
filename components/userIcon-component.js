@@ -60,7 +60,8 @@ export default function UserIcon(props) {
         borderWidth: 2,
         borderRadius: 100,
         padding: 2,
-        borderColor: "rgb(145, 168, 209)",
+        borderColor:
+          props.status === "invited" ? "green" : "rgba(0, 0, 0, 0.2)",
       }}
     >
       {props.profileImageUrl ? (

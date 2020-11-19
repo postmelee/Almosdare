@@ -31,6 +31,7 @@ const Stack = createStackNavigator();
 const customFonts = {
   "OpenSansCondensed-Light": require("../assets/fonts/OpenSansCondensed-Light.ttf"),
   "NotoSansKR-Light": require("../assets/fonts/NotoSansKR-Light.otf"),
+  "NotoSansKR-Medium": require("../assets/fonts/NotoSansKR-Medium.otf"),
 };
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
@@ -82,75 +83,82 @@ export default class Home extends React.Component {
       .then((json) => {
         //alert(JSON.stringify(json))
         if (json.result === 1) {
+          const invitedDareList = json.data.invitedDare
+            .concat()
+            .map((dareData, i) => {
+              return (
+                <DareIcon
+                  id={i}
+                  key={"DareIcon1" + i}
+                  dareData={dareData}
+                  isStarted={false}
+                />
+              );
+            });
+          const invitedInstantList = json.data.invitedInstant
+            .concat()
+            .map((instantData, i) => {
+              return (
+                <InstantIcon
+                  key={"InstantIcon1" + i}
+                  id={i}
+                  instantData={instantData}
+                  isPopup={false}
+                  isBlured={this.state.isBlured}
+                  setSelectedData={(data) => {
+                    this.setState({
+                      selectedData: data,
+                    });
+                  }}
+                  setIsBlured={(toggle) => {
+                    this.setState({
+                      isBlured: toggle,
+                    });
+                  }}
+                />
+              );
+            });
+          const pendingDareList = json.data.pendingDare
+            .concat()
+            .map((dareData, i) => {
+              return (
+                <DareIcon
+                  id={i}
+                  key={"DareIcon1" + i}
+                  dareData={dareData}
+                  isStarted={false}
+                />
+              );
+            });
+          const pendingInstantList = json.data.pendingInstant
+            .concat()
+            .map((instantData, i) => {
+              return (
+                <InstantIcon
+                  key={"InstantIcon1" + i}
+                  id={i}
+                  instantData={instantData}
+                  isPopup={false}
+                  isBlured={this.state.isBlured}
+                  setSelectedData={(data) => {
+                    this.setState({
+                      selectedData: data,
+                    });
+                  }}
+                  setIsBlured={(toggle) => {
+                    this.setState({
+                      isBlured: toggle,
+                    });
+                  }}
+                />
+              );
+            });
           this.setState({
-            invitedDareList: json.data.invitedDare.map((dareData, i) => {
-              console.log(dareData);
-              return (
-                <DareIcon
-                  id={i}
-                  key={"DareIcon1" + i}
-                  dareData={dareData}
-                  isStarted={false}
-                />
-              );
-            }),
+            invitedDareList,
 
-            invitedInstantList: json.data.invitedInstant.map(
-              (instantData, i) => {
-                return (
-                  <InstantIcon
-                    key={"InstantIcon1" + i}
-                    id={i}
-                    instantData={instantData}
-                    isPopup={false}
-                    isBlured={this.state.isBlured}
-                    setSelectedData={(data) => {
-                      this.setState({
-                        selectedData: data,
-                      });
-                    }}
-                    setIsBlured={(toggle) => {
-                      this.setState({
-                        isBlured: toggle,
-                      });
-                    }}
-                  />
-                );
-              }
-            ),
-            pendingDareList: json.data.pendingDare.map((dareData, i) => {
-              return (
-                <DareIcon
-                  id={i}
-                  key={"DareIcon1" + i}
-                  dareData={dareData}
-                  isStarted={false}
-                />
-              );
-            }),
-            pendingInstantList: json.data.pendingInstant.map(
-              (instantData, i) => {
-                return (
-                  <InstantIcon
-                    key={"InstantIcon1" + i}
-                    id={i}
-                    instantData={instantData}
-                    isPopup={false}
-                    isBlured={this.state.isBlured}
-                    setSelectedData={(data) => {
-                      this.setState({
-                        selectedData: data,
-                      });
-                    }}
-                    setIsBlured={(toggle) => {
-                      this.setState({
-                        isBlured: toggle,
-                      });
-                    }}
-                  />
-                );
-              }
-            ),
+            invitedInstantList,
+            pendingDareList,
+            pendingInstantList,
           });
         } else {
           alert("ERROR");
@@ -168,7 +176,6 @@ export default class Home extends React.Component {
       scrollY: this.state.dareScrollY,
     });
   };
-
   handleCreateDareReq = async (newDareData) => {
     let token = await AsyncStorage.getItem("userToken");
     return fetch("https://almosdare.herokuapp.com/api/dares", {
@@ -187,7 +194,6 @@ export default class Home extends React.Component {
       .then((json) => {
         //alert(JSON.stringify(json))
         if (json.result === 1) {
-          console.log(json);
           let dareId = json.idx;
           this.setState({
             showEmptyDare: true,
@@ -208,7 +214,6 @@ export default class Home extends React.Component {
             .then((res) => res.json())
             .then((json2) => {
               if (json2.result === 1) {
-                console.log(json2.data);
                 const id = this.state.invitedDareList.length;
                 const newDare = (
                   <DareIcon
@@ -250,6 +255,7 @@ export default class Home extends React.Component {
   };
   handleCreateInstantReq = async (newInstantData) => {
     let token = await AsyncStorage.getItem("userToken");
+    console.log("gogo!");
     return fetch("https://almosdare.herokuapp.com/api/instants", {
       method: "POST",
       headers: new Headers({
@@ -283,7 +289,6 @@ export default class Home extends React.Component {
             .then((res) => res.json())
             .then((json2) => {
               if (json2.result === 1) {
-                console.log(json2.data);
                 const id = this.state.invitedInstantList.length;
                 const newInstant = (
                   <InstantIcon
@@ -354,60 +359,6 @@ export default class Home extends React.Component {
     });
   };
 
-  renderEmptyDare = () => {
-    console.log(this.props.route.params);
-    if (this.props.route.params && this.props.route.params.newDareReq) {
-      console.log("hi3");
-      const newDareData = this.props.route.params.newDareData;
-      this.props.navigation.setParams({
-        newDareReq: false,
-        newDareData: false,
-      });
-      this.handleCreateDareReq(newDareData);
-    }
-    return this.state.showEmptyDare ? (
-      <View
-        style={{
-          borderRadius: 30,
-          backgroundColor: "rgb(240, 240, 240)",
-          borderWidth: 1,
-          borderColor: "rgba(0, 0, 0, 0.3)",
-          width: "44%",
-          aspectRatio: 1,
-          marginLeft: "4%",
-          marginTop: "4%",
-        }}
-      ></View>
-    ) : null;
-  };
-
-  renderEmptyInstant = () => {
-    console.log("hi");
-    if (this.props.route.params && this.props.route.params.newInstantReq) {
-      const newInstantData = this.props.route.params.newInstantData;
-      this.props.navigation.setParams({
-        newInstantReq: false,
-        newInstantData: false,
-      });
-      this.handleCreateInstantReq(newInstantData);
-    }
-    return this.state.showEmptyInstant ? (
-      <View
-        style={{
-          borderRadius: 20,
-
-          borderWidth: 1,
-          borderColor: "rgba(0, 0, 0, 0.3)",
-          width: "92%",
-          height: Dimensions.get("window").width * 0.2,
-          marginLeft: "4%",
-          marginRight: "4%",
-          zIndex: 2,
-          marginTop: "4%",
-        }}
-      ></View>
-    ) : null;
-  };
   renderBlurPopup = () => {
     return (
       <TouchableWithoutFeedback
@@ -585,6 +536,36 @@ export default class Home extends React.Component {
 
   componentDidMount() {
     this.fetchData();
+    this.props.navigation.setParams({});
+  }
+
+  componentDidUpdate() {
+    if (this.props.route.params && this.props.route.params.newDareReq) {
+      const newDareData = Object.assign(
+        {},
+        this.props.route.params.newDareData
+      );
+      this.props.navigation.setParams({
+        newDareReq: false,
+        newDareData: false,
+      });
+      console.log(newDareData);
+      this.handleCreateDareReq(newDareData);
+      console.log("newDareReq!");
+    }
+    if (this.props.route.params && this.props.route.params.newInstantReq) {
+      const newInstantData = Object.assign(
+        {},
+        this.props.route.params.newInstantData
+      );
+      this.props.navigation.setParams({
+        newInstantReq: false,
+        newInstantData: false,
+      });
+      console.log(newInstantData);
+      this.handleCreateInstantReq(newInstantData);
+      console.log("newInstantReq!");
+    }
   }
 
   render() {
@@ -599,16 +580,16 @@ export default class Home extends React.Component {
           <Animated.View
             style={{
               position: "absolute",
-              width: 160,
+              width: 130,
               height: 37,
-              backgroundColor: "rgba(255, 255, 255, 0.7)",
+              backgroundColor:
+                this.state.displayMode === "pending"
+                  ? "rgb(200, 200, 200)"
+                  : "green",
               top: 165,
               zIndex: 1,
               borderRadius: 60,
-              right: Dimensions.get("screen").width / 2 - 80,
-
-              borderWidth: 2,
-              borderColor: "black",
+              right: Dimensions.get("screen").width / 2 - 65,
 
               transform: [
                 {
@@ -624,24 +605,35 @@ export default class Home extends React.Component {
               onPress={() => {
                 this.setState({
                   displayMode:
-                    this.state.displayMode === "invited"
-                      ? "pending"
-                      : "invited",
+                    this.state.displayMode === "pending"
+                      ? "invited"
+                      : "pending",
                 });
               }}
               style={{
                 flex: 1,
                 borderRadius: 60,
+                backgroundColor:
+                  this.state.displayMode === "pending"
+                    ? "rgb(200, 200, 200)"
+                    : "green",
                 alignItems: "center",
                 justifyContent: "center",
+                shadowColor: "black",
+                shadowOffset: {
+                  height: 3,
+                },
+                shadowOpacity: 0.5,
+                shadowRadius: 2,
               }}
             >
               <Text
                 style={{
-                  fontSize: 17,
+                  fontSize: 15,
                   fontWeight: "500",
-                  color: "black",
-                  textTransform: "uppercase",
+                  color:
+                    this.state.displayMode === "pending" ? "black" : "white",
+                  textTransform: "capitalize",
                 }}
               >
                 {this.state.displayMode}
@@ -732,32 +724,30 @@ export default class Home extends React.Component {
                   flexWrap: "wrap",
                   flexDirection: "row",
                 }}
-                onLayout={(event) => {
-                  if (
-                    event.nativeEvent.layout.height !== HEIGHT + 3 &&
-                    event.nativeEvent.layout.height !==
-                      this.state.dareViewHeight
-                  ) {
-                    this.setState({
-                      dareViewHeight: event.nativeEvent.layout.height,
-                    });
-                  }
-                }}
               >
                 <View
                   style={{
                     width: "100%",
-                    paddingBottom: 51,
+                    marginBottom: 88,
                     paddingLeft: 8,
-                    zIndex: 2,
                   }}
                 >
                   <Text style={styles.titleText}>Dare</Text>
                 </View>
-                {this.props.navigation.isFocused() &&
-                this.state.displayMode === "invited"
-                  ? this.renderEmptyDare()
-                  : null}
+                {this.state.showEmptyDare ? (
+                  <View
+                    style={{
+                      borderRadius: 30,
+                      backgroundColor: "rgb(240, 240, 240)",
+                      borderWidth: 1,
+                      borderColor: "rgba(0, 0, 0, 0.3)",
+                      width: "44%",
+                      aspectRatio: 1,
+                      marginLeft: "4%",
+                      marginTop: "4%",
+                    }}
+                  ></View>
+                ) : null}
                 {this.state.displayMode === "pending"
                   ? this.state.pendingDareList
                   : this.state.invitedDareList}
@@ -765,12 +755,6 @@ export default class Home extends React.Component {
                   style={{
                     width: "100%",
                     height: 100,
-                  }}
-                ></View>
-                <View
-                  style={{
-                    width: "100%",
-                    height: HEIGHT - this.state.dareViewHeight + 3,
                   }}
                 ></View>
               </View>
@@ -817,32 +801,38 @@ export default class Home extends React.Component {
               )}
             >
               <View
-                style={{ flex: 1, flexWrap: "wrap", flexDirection: "row" }}
-                onLayout={(event) => {
-                  if (
-                    event.nativeEvent.layout.height !== HEIGHT + 3 &&
-                    event.nativeEvent.layout.height !==
-                      this.state.instantViewHeight
-                  ) {
-                    this.setState({
-                      instantViewHeight: event.nativeEvent.layout.height,
-                    });
-                  }
+                style={{
+                  flex: 1,
+                  flexWrap: "wrap",
+                  flexDirection: "row",
                 }}
               >
                 <View
                   style={{
                     width: "100%",
+                    flex: 1,
                     marginBottom: 88,
                     paddingLeft: 8,
                   }}
                 >
                   <Text style={styles.titleText}>Instant</Text>
                 </View>
-                {this.props.navigation.isFocused() &&
-                this.state.displayMode === "invited"
-                  ? this.renderEmptyInstant()
-                  : null}
+                {this.state.showEmptyInstant ? (
+                  <View
+                    style={{
+                      borderRadius: 20,
+
+                      borderWidth: 1,
+                      borderColor: "rgba(0, 0, 0, 0.3)",
+                      width: "92%",
+                      height: Dimensions.get("window").width * 0.2,
+                      marginLeft: "4%",
+                      marginRight: "4%",
+                      zIndex: 2,
+                      marginTop: "4%",
+                    }}
+                  ></View>
+                ) : null}
                 {this.state.displayMode === "pending"
                   ? this.state.pendingInstantList
                   : this.state.invitedInstantList}
@@ -850,12 +840,6 @@ export default class Home extends React.Component {
                   style={{
                     width: "100%",
                     height: 100,
-                  }}
-                ></View>
-                <View
-                  style={{
-                    width: "100%",
-                    height: HEIGHT - this.state.instantViewHeight + 3,
                   }}
                 ></View>
               </View>
@@ -881,7 +865,7 @@ const styles = StyleSheet.create({
     lineHeight: 45,
     fontSize: 40,
     marginLeft: "4%",
-    fontFamily: "NotoSansKR-Light",
+    fontWeight: "400",
   },
   content: {
     width: "100%",
