@@ -34,6 +34,7 @@ export default class CreateDareScreen extends React.Component {
   }
 
   render() {
+    console.log(this.props.navigation);
     return (
       <View style={{ flex: 1, backgroundColor: "white" }}>
         <MainStack.Navigator mode="modal" initialRouteName="Start">
@@ -46,6 +47,7 @@ export default class CreateDareScreen extends React.Component {
             }}
             initialParams={{
               navigation: this.props.navigation,
+              route: this.props.route,
             }}
           ></MainStack.Screen>
           <MainStack.Screen
@@ -55,18 +57,12 @@ export default class CreateDareScreen extends React.Component {
               headerShown: false,
               gestureEnabled: false,
             }}
-            initialParams={{
-              navigation: this.props.navigation,
-            }}
           ></MainStack.Screen>
           <MainStack.Screen
             name="Second"
             component={CreateDareSecondScreen}
             options={{
               headerShown: false,
-            }}
-            initialParams={{
-              navigation: this.props.navigation,
             }}
           ></MainStack.Screen>
           <MainStack.Screen
@@ -75,9 +71,6 @@ export default class CreateDareScreen extends React.Component {
             options={{
               headerShown: false,
               gestureEnabled: false,
-            }}
-            initialParams={{
-              navigation: this.props.navigation,
             }}
           ></MainStack.Screen>
         </MainStack.Navigator>

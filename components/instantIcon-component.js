@@ -59,10 +59,6 @@ export default class InstantIcon extends React.Component {
             borderRadius: 20,
             flex: 1,
             backgroundColor: "rgb(240, 240, 240)",
-            shadowColor: "white",
-            shadowOffset: { width: -4, height: -4 },
-            shadowRadius: 3,
-            shadowOpacity: 0.8,
           }}
         >
           <View style={styles.block}>
@@ -141,21 +137,16 @@ export default class InstantIcon extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    borderRadius: 30,
+    borderRadius: 20,
 
+    borderWidth: 1,
+    borderColor: "rgba(0, 0, 0, 0.3)",
     width: "92%",
     height: Dimensions.get("window").width * 0.2,
     marginLeft: "4%",
     marginRight: "4%",
     zIndex: 2,
     marginTop: "4%",
-    shadowOffset: {
-      width: 6,
-      height: 6,
-    },
-    shadowColor: "grey",
-    shadowRadius: 4,
-    shadowOpacity: 0.6,
   },
   block: {
     flexDirection: "row",

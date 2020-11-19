@@ -273,68 +273,22 @@ export default class CreateDareFirstScreen extends React.Component {
       return 1;
     }
   }
-  createInstant = async () => {
-    let token = await AsyncStorage.getItem("userToken");
+  createInstant = () => {
     if (this.state.members.length < 2) {
       alert("You need to invited at least 1 person");
       return;
     }
-    this.setState({
-      loadingVisible: true,
-    });
-    const member = this.state.members;
-    const index = member.indexOf(this.state.userData);
+    const members = this.state.members;
+    const index = members.indexOf(this.state.userData);
     if (index > -1) {
-      member.splice(index, 1);
+      members.splice(index, 1);
     }
-    return fetch("https://almosdare.herokuapp.com/api/instants", {
-      method: "POST",
-      headers: new Headers({
-        Authorization: token,
-        "Content-Type": "application/json",
-      }),
-    })
-      .then((response) => response.json())
-      .then((json) => {
-        //alert(JSON.stringify(json))
-        if (json.result === 1) {
-          let instantId = json.idx;
-          return fetch(
-            "https://almosdare.herokuapp.com/api/instants/" +
-              instantId +
-              "/inviting",
-            {
-              method: "POST",
-              headers: new Headers({
-                Authorization: token,
-                "Content-Type": "application/json",
-              }),
-              body: JSON.stringify({ users: member }),
-            }
-          )
-            .then((res) => res.json())
-            .then((json2) => {
-              if (json2.result === 1) {
-                this.setState({
-                  loadingMessage: "Inviting Success!",
-                });
-                this.props.navigation.goBack();
-              } else {
-                alert("Can't Send Invitation");
-              }
-            })
-            .catch((error) => {
-              console.log(error);
-              alert("Server Problem: " + error);
-            });
-        } else {
-          alert("Can't Create Instant");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        alert("Server Problem");
-      });
+    this.props.navigation.navigate("HomeView", {
+      newInstantData: {
+        members,
+      },
+      newInstantReq: true,
+    });
   };
 
   async searchUserById(id) {
@@ -374,6 +328,7 @@ export default class CreateDareFirstScreen extends React.Component {
 
   render() {
     const { modalVisible, loadingVisible } = this.state;
+    console.log(this.props.route);
     if (this.state.loaded) {
       return (
         <View style={styles.container}>
@@ -472,8 +427,13 @@ export default class CreateDareFirstScreen extends React.Component {
               {this.state.appType === "Dare" ? (
                 <TouchableWithoutFeedback
                   onPress={() => {
+                    const members = this.state.members;
+                    const index = members.indexOf(this.state.userData);
+                    if (index > -1) {
+                      members.splice(index, 1);
+                    }
                     this.props.navigation.navigate("First", {
-                      members: this.state.members,
+                      members: members,
                     });
                   }}
                 >
@@ -838,7 +798,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    backgroundColor: "rgb(240, 240, 240)",
+    backgroundColor: "white",
   },
   loadingView: {
     flex: 1,

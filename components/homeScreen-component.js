@@ -24,6 +24,7 @@ import { BlurView } from "expo-blur";
 import { AppLoading } from "expo";
 import * as Font from "expo-font";
 import { Ionicons } from "@expo/vector-icons";
+import { FontAwesome5 } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 
 const Stack = createStackNavigator();
@@ -49,66 +50,17 @@ export default class Home extends React.Component {
       isRefreshing: false,
       isMomentumScroll: false,
       isTouched: false,
+      displayMode: "invited",
+      showEmptyInstant: false,
+      showEmptyDare: false,
       showIndicator: false,
       currentIndex: 0,
       dareViewHeight: 0,
       instantViewHeight: 0,
       selectedOffset: null,
       invitedDareList: [],
-      invitedinstantList: [],
-      pendingDareList: [
-        {
-          location: "돌고지",
-          date: new Date(),
-          pending: [
-            { id: "5f9c907fac38d00017635332", name: "nick" },
-            { id: "5f9c907fac38d00017635332", name: "nick" },
-          ],
-          invited: [
-            { id: "5f9c907fac38d00017635332", name: "tom" },
-            { id: "5f9c907fac38d00017635332", name: "nick" },
-            { id: "5f9c907fac38d00017635332", name: "nick" },
-          ],
-          _id: "5f9cdbf33865e400174459d7",
-          createdAt: "2020-10-31T03:37:23.038Z",
-          updatedAt: "2020-10-31T03:37:23.880Z",
-          v: 0,
-        },
-        {
-          location: "돌고지",
-          date: new Date(),
-          pending: [
-            { id: "5f9c907fac38d00017635332", name: "nick" },
-            { id: "5f9c907fac38d00017635332", name: "nick" },
-          ],
-          invited: [
-            { id: "5f9c907fac38d00017635332", name: "tom" },
-            { id: "5f9c907fac38d00017635332", name: "nick" },
-            { id: "5f9c907fac38d00017635332", name: "nick" },
-          ],
-          _id: "5f9cdbf33865e400174459d7",
-          createdAt: "2020-10-31T03:37:23.038Z",
-          updatedAt: "2020-10-31T03:37:23.880Z",
-          v: 0,
-        },
-        {
-          location: "돌고지",
-          date: new Date(),
-          pending: [
-            { id: "5f9c907fac38d00017635332", name: "nick" },
-            { id: "5f9c907fac38d00017635332", name: "nick" },
-          ],
-          invited: [
-            { id: "5f9c907fac38d00017635332", name: "tom" },
-            { id: "5f9c907fac38d00017635332", name: "nick" },
-            { id: "5f9c907fac38d00017635332", name: "nick" },
-          ],
-          _id: "5f9cdbf33865e400174459d7",
-          createdAt: "2020-10-31T03:37:23.038Z",
-          updatedAt: "2020-10-31T03:37:23.880Z",
-          v: 0,
-        },
-      ],
+      invitedInstantList: [],
+      pendingDareList: [],
       pendingInstantList: [],
     };
     this.fetchData = this.fetchData.bind(this);
@@ -131,10 +83,74 @@ export default class Home extends React.Component {
         //alert(JSON.stringify(json))
         if (json.result === 1) {
           this.setState({
-            invitedDareList: json.data.invitedDare,
+            invitedDareList: json.data.invitedDare.map((dareData, i) => {
+              console.log(dareData);
+              return (
+                <DareIcon
+                  id={i}
+                  key={"DareIcon1" + i}
+                  dareData={dareData}
+                  isStarted={false}
+                />
+              );
+            }),
 
-            invitedinstantList: json.data.invitedInstant,
-            pendingInstantList: json.data.pendingInstant,
+            invitedInstantList: json.data.invitedInstant.map(
+              (instantData, i) => {
+                return (
+                  <InstantIcon
+                    key={"InstantIcon1" + i}
+                    id={i}
+                    instantData={instantData}
+                    isPopup={false}
+                    isBlured={this.state.isBlured}
+                    setSelectedData={(data) => {
+                      this.setState({
+                        selectedData: data,
+                      });
+                    }}
+                    setIsBlured={(toggle) => {
+                      this.setState({
+                        isBlured: toggle,
+                      });
+                    }}
+                  />
+                );
+              }
+            ),
+            pendingDareList: json.data.pendingDare.map((dareData, i) => {
+              return (
+                <DareIcon
+                  id={i}
+                  key={"DareIcon1" + i}
+                  dareData={dareData}
+                  isStarted={false}
+                />
+              );
+            }),
+            pendingInstantList: json.data.pendingInstant.map(
+              (instantData, i) => {
+                return (
+                  <InstantIcon
+                    key={"InstantIcon1" + i}
+                    id={i}
+                    instantData={instantData}
+                    isPopup={false}
+                    isBlured={this.state.isBlured}
+                    setSelectedData={(data) => {
+                      this.setState({
+                        selectedData: data,
+                      });
+                    }}
+                    setIsBlured={(toggle) => {
+                      this.setState({
+                        isBlured: toggle,
+                      });
+                    }}
+                  />
+                );
+              }
+            ),
           });
         } else {
           alert("ERROR");
@@ -153,6 +169,175 @@ export default class Home extends React.Component {
     });
   };
 
+  handleCreateDareReq = async (newDareData) => {
+    let token = await AsyncStorage.getItem("userToken");
+    return fetch("https://almosdare.herokuapp.com/api/dares", {
+      method: "POST",
+      headers: new Headers({
+        Authorization: token,
+        "Content-Type": "application/json",
+      }),
+
+      body: JSON.stringify({
+        date: newDareData.date,
+        place: newDareData.place,
+      }),
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        //alert(JSON.stringify(json))
+        if (json.result === 1) {
+          console.log(json);
+          let dareId = json.idx;
+          this.setState({
+            showEmptyDare: true,
+          });
+          return fetch(
+            "https://almosdare.herokuapp.com/api/dares/" + dareId + "/inviting",
+            {
+              method: "POST",
+              headers: new Headers({
+                Authorization: token,
+                "Content-Type": "application/json",
+              }),
+              body: JSON.stringify({
+                users: newDareData.members,
+              }),
+            }
+          )
+            .then((res) => res.json())
+            .then((json2) => {
+              if (json2.result === 1) {
+                console.log(json2.data);
+                const id = this.state.invitedDareList.length;
+                const newDare = (
+                  <DareIcon
+                    id={id + 1}
+                    key={"DareIcon" + (id + 1)}
+                    dareData={json2.data}
+                    isStarted={false}
+                  />
+                );
+                return newDare;
+              } else {
+                alert("Can't Send Invitation");
+                return false;
+              }
+            })
+            .then((result) => {
+              if (result) {
+                this.setState({
+                  showEmptyDare: false,
+                  invitedDareList: [result, ...this.state.invitedDareList],
+                });
+              }
+              return 0;
+            })
+            .catch((error) => {
+              console.log(error);
+              alert("Server Problem: " + error);
+            });
+        } else {
+          alert("Can't Create Instant");
+          return -1;
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        alert("Server Problem");
+        return -1;
+      });
+  };
+  handleCreateInstantReq = async (newInstantData) => {
+    let token = await AsyncStorage.getItem("userToken");
+    return fetch("https://almosdare.herokuapp.com/api/instants", {
+      method: "POST",
+      headers: new Headers({
+        Authorization: token,
+        "Content-Type": "application/json",
+      }),
+    })
+      .then((response) => response.json())
+      .then((json) => {
+        //alert(JSON.stringify(json))
+        if (json.result === 1) {
+          let instantId = json.idx;
+          this.setState({
+            showEmptyInstant: true,
+          });
+          return fetch(
+            "https://almosdare.herokuapp.com/api/instants/" +
+              instantId +
+              "/inviting",
+            {
+              method: "POST",
+              headers: new Headers({
+                Authorization: token,
+                "Content-Type": "application/json",
+              }),
+              body: JSON.stringify({
+                users: newInstantData.members,
+              }),
+            }
+          )
+            .then((res) => res.json())
+            .then((json2) => {
+              if (json2.result === 1) {
+                console.log(json2.data);
+                const id = this.state.invitedInstantList.length;
+                const newInstant = (
+                  <InstantIcon
+                    key={"instantIcon1" + (id + 1)}
+                    id={id + 1}
+                    instantData={json2.data}
+                    isPopup={false}
+                    isBlured={this.state.isBlured}
+                    setSelectedData={(data) => {
+                      this.setState({
+                        selectedData: data,
+                      });
+                    }}
+                    setIsBlured={(toggle) => {
+                      this.setState({
+                        isBlured: toggle,
+                      });
+                    }}
+                  />
+                );
+                return newInstant;
+              } else {
+                alert("Can't Send Invitation");
+                return false;
+              }
+            })
+            .then((result) => {
+              if (result) {
+                this.setState({
+                  showEmptyInstant: false,
+                  invitedInstantList: [
+                    result,
+                    ...this.state.invitedInstantList,
+                  ],
+                });
+              }
+              return 0;
+            })
+            .catch((error) => {
+              console.log(error);
+              alert("Server Problem: " + error);
+            });
+        } else {
+          alert("Can't Create Instant");
+          return -1;
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        alert("Server Problem");
+        return -1;
+      });
+  };
+
   onRefresh = () => {
     const wait = (timeout) => {
       return new Promise((resolve) => {
@@ -168,7 +353,62 @@ export default class Home extends React.Component {
       });
     });
   };
-  renderBlurPopup() {
+
+  renderEmptyDare = () => {
+    console.log(this.props.route.params);
+    if (this.props.route.params && this.props.route.params.newDareReq) {
+      console.log("hi3");
+      const newDareData = this.props.route.params.newDareData;
+      this.props.navigation.setParams({
+        newDareReq: false,
+        newDareData: false,
+      });
+      this.handleCreateDareReq(newDareData);
+    }
+    return this.state.showEmptyDare ? (
+      <View
+        style={{
+          borderRadius: 30,
+          backgroundColor: "rgb(240, 240, 240)",
+          borderWidth: 1,
+          borderColor: "rgba(0, 0, 0, 0.3)",
+          width: "44%",
+          aspectRatio: 1,
+          marginLeft: "4%",
+          marginTop: "4%",
+        }}
+      ></View>
+    ) : null;
+  };
+
+  renderEmptyInstant = () => {
+    console.log("hi");
+    if (this.props.route.params && this.props.route.params.newInstantReq) {
+      const newInstantData = this.props.route.params.newInstantData;
+      this.props.navigation.setParams({
+        newInstantReq: false,
+        newInstantData: false,
+      });
+      this.handleCreateInstantReq(newInstantData);
+    }
+    return this.state.showEmptyInstant ? (
+      <View
+        style={{
+          borderRadius: 20,
+
+          borderWidth: 1,
+          borderColor: "rgba(0, 0, 0, 0.3)",
+          width: "92%",
+          height: Dimensions.get("window").width * 0.2,
+          marginLeft: "4%",
+          marginRight: "4%",
+          zIndex: 2,
+          marginTop: "4%",
+        }}
+      ></View>
+    ) : null;
+  };
+  renderBlurPopup = () => {
     return (
       <TouchableWithoutFeedback
         onPress={() => {
@@ -261,34 +501,30 @@ export default class Home extends React.Component {
         </BlurView>
       </TouchableWithoutFeedback>
     );
-  }
+  };
   renderPagination = (index, total, context) => {
     //Animated.multiply(this.state.scrollY, -1);
 
     const translateY = this.state.scrollY.interpolate({
       inputRange: [-HEIGHT, 0, 53, HEIGHT],
       outputRange: [HEIGHT, 0, -53, -53],
-      extrapolate: "clamp",
     });
     const translateX = this.state.scrollX.interpolate({
       inputRange: [0, WIDTH],
       outputRange: [0, WIDTH / 2],
-      extrapolate: "clamp",
     });
     const imageOpacityLeft = this.state.scrollX.interpolate({
       inputRange: [0, WIDTH],
       outputRange: [1, 0.2],
-      extrapolate: "clamp",
     });
     const imageOpacityRight = this.state.scrollX.interpolate({
       inputRange: [0, WIDTH],
       outputRange: [0.2, 1],
-      extrapolate: "clamp",
     });
     return (
       <Animated.View
         style={{
-          backgroundColor: "rgb(240, 240, 240)",
+          backgroundColor: "white",
           position: "absolute",
           top: 113,
           left: 0,
@@ -360,6 +596,58 @@ export default class Home extends React.Component {
             index={this.state.currentIndex}
           ></Header>
           {this.state.isBlured === true ? this.renderBlurPopup() : null}
+          <Animated.View
+            style={{
+              position: "absolute",
+              width: 160,
+              height: 37,
+              backgroundColor: "rgba(255, 255, 255, 0.7)",
+              top: 165,
+              zIndex: 1,
+              borderRadius: 60,
+              right: Dimensions.get("screen").width / 2 - 80,
+
+              borderWidth: 2,
+              borderColor: "black",
+
+              transform: [
+                {
+                  translateY: this.state.scrollY.interpolate({
+                    inputRange: [-HEIGHT, 0, 53, HEIGHT],
+                    outputRange: [HEIGHT, 0, -53, -53],
+                  }),
+                },
+              ],
+            }}
+          >
+            <TouchableOpacity
+              onPress={() => {
+                this.setState({
+                  displayMode:
+                    this.state.displayMode === "invited"
+                      ? "pending"
+                      : "invited",
+                });
+              }}
+              style={{
+                flex: 1,
+                borderRadius: 60,
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 17,
+                  fontWeight: "500",
+                  color: "black",
+                  textTransform: "uppercase",
+                }}
+              >
+                {this.state.displayMode}
+              </Text>
+            </TouchableOpacity>
+          </Animated.View>
 
           <Swiper
             style={{
@@ -462,21 +750,17 @@ export default class Home extends React.Component {
                     paddingBottom: 51,
                     paddingLeft: 8,
                     zIndex: 2,
-                    backgroundColor: "rgb(240, 240, 240)",
                   }}
                 >
                   <Text style={styles.titleText}>Dare</Text>
                 </View>
-                {this.state.pendingDareList.map((dareData, i) => {
-                  return (
-                    <DareIcon
-                      id={i}
-                      key={"DareIcon" + i}
-                      dareData={dareData}
-                      isStarted={false}
-                    />
-                  );
-                })}
+                {this.props.navigation.isFocused() &&
+                this.state.displayMode === "invited"
+                  ? this.renderEmptyDare()
+                  : null}
+                {this.state.displayMode === "pending"
+                  ? this.state.pendingDareList
+                  : this.state.invitedDareList}
                 <View
                   style={{
                     width: "100%",
@@ -549,34 +833,19 @@ export default class Home extends React.Component {
                 <View
                   style={{
                     width: "100%",
-                    marginBottom: 51,
+                    marginBottom: 88,
                     paddingLeft: 8,
-                    backgroundColor: "rgb(240, 240, 240)",
                   }}
                 >
                   <Text style={styles.titleText}>Instant</Text>
                 </View>
-                {this.state.pendingInstantList.map((instantData, i) => {
-                  return (
-                    <InstantIcon
-                      key={"InstantIcon" + i}
-                      id={i}
-                      instantData={instantData}
-                      isPopup={false}
-                      isBlured={this.state.isBlured}
-                      setSelectedData={(data) => {
-                        this.setState({
-                          selectedData: data,
-                        });
-                      }}
-                      setIsBlured={(toggle) => {
-                        this.setState({
-                          isBlured: toggle,
-                        });
-                      }}
-                    />
-                  );
-                })}
+                {this.props.navigation.isFocused() &&
+                this.state.displayMode === "invited"
+                  ? this.renderEmptyInstant()
+                  : null}
+                {this.state.displayMode === "pending"
+                  ? this.state.pendingInstantList
+                  : this.state.invitedInstantList}
                 <View
                   style={{
                     width: "100%",
@@ -606,7 +875,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     zIndex: 0,
-    backgroundColor: "rgb(240, 240, 240)",
+    backgroundColor: "white",
   },
   titleText: {
     lineHeight: 45,

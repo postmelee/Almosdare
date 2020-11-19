@@ -12,7 +12,7 @@ import {
   Dimensions,
   TouchableHighlight,
   View,
-  Image
+  Image,
 } from "react-native";
 
 export default function UserIcon(props) {
@@ -63,7 +63,7 @@ export default function UserIcon(props) {
         borderColor: "rgb(145, 168, 209)",
       }}
     >
-      { props.profileImageUrl ?
+      {props.profileImageUrl ? (
         <Image
           source={{ uri: props.profileImageUrl }}
           style={{
@@ -75,9 +75,8 @@ export default function UserIcon(props) {
             borderRadius: 100,
             marginRight: 11,
           }}
-        >
-        </Image>
-        :
+        ></Image>
+      ) : (
         <View
           style={{
             flex: 1,
@@ -105,8 +104,7 @@ export default function UserIcon(props) {
             {props.username}
           </Text>
         </View>
-      }
-        
+      )}
     </View>
   );
 }

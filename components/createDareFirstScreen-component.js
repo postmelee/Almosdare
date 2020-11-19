@@ -112,7 +112,6 @@ export default class CreateDareFirstScreen extends React.Component {
           <View style={styles.header}>
             <TouchableWithoutFeedback
               onPress={() => {
-                console.log(this.props);
                 this.props.navigation.goBack();
               }}
             >
@@ -132,6 +131,7 @@ export default class CreateDareFirstScreen extends React.Component {
                   date: this.state.date,
                   hour: this.renderHour().hourStr,
                   minute: this.renderMinute(),
+                  members: this.props.route.params.members,
                 });
               }}
             >
@@ -246,7 +246,7 @@ export default class CreateDareFirstScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "rgb(240, 240, 240)",
+    backgroundColor: "white",
   },
   body: {
     flex: 1,

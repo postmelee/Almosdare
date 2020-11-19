@@ -29,11 +29,11 @@ const HomeStack = createSharedElementStackNavigator();
 const RootStack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-function HomeStackScreen() {
+function HomeStackScreen({ route, navigation }) {
   return (
-    <HomeStack.Navigator initialRouteName="Home">
+    <HomeStack.Navigator initialRouteName="HomeView">
       <HomeStack.Screen
-        name="Home"
+        name="HomeView"
         component={HomeScreen}
         options={{
           headerShown: false,
@@ -61,7 +61,7 @@ function HomeStackScreen() {
   );
 }
 
-function TabNavigation() {
+function TabNavigation({ route, navigation }) {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({

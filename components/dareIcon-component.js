@@ -18,6 +18,7 @@ import UserIcon from "./userIcon-component";
 
 export default function DareIcon(props) {
   const navigation = useNavigation();
+  const date = new Date(props.dareData.date);
   //props should have
   //  date = {month, day}, location=String(""), time=String("xx:xx xm"), member = []
   return (
@@ -32,10 +33,6 @@ export default function DareIcon(props) {
         style={{
           flex: 1,
           borderRadius: 30,
-          shadowColor: "white",
-          shadowOffset: { width: -4, height: -4 },
-          shadowRadius: 3,
-          shadowOpacity: 0.8,
         }}
       >
         <LinearGradient
@@ -46,24 +43,20 @@ export default function DareIcon(props) {
             <View style={styles.date}>
               <SharedElement style={{}} id={props.id + "month"}>
                 <Text style={styles.month}>
-                  {props.dareData.date.getMonth()}{" "}
-                  <Text style={styles.day}>
-                    {props.dareData.date.getDate()}
-                  </Text>
+                  {date.getMonth()}{" "}
+                  <Text style={styles.day}>{date.getDate()}</Text>
                 </Text>
               </SharedElement>
             </View>
             <View style={{ zIndex: 1 }}>
               <SharedElement id={props.id + "location"}>
                 <Text numberOfLines={2} style={styles.location}>
-                  {props.dareData.location}
+                  {props.dareData.place.name}
                 </Text>
               </SharedElement>
               <SharedElement id={props.id + "time"}>
                 <Text style={styles.time}>
-                  {props.dareData.date.getHours() +
-                    ":" +
-                    props.dareData.date.getMinutes()}
+                  {date.getHours() + ":" + date.getMinutes()}
                 </Text>
               </SharedElement>
             </View>
@@ -74,7 +67,7 @@ export default function DareIcon(props) {
                 <UserIcon
                   id={props.id}
                   fontSize={20}
-                  username={props.dareData.invited[0].name}
+                  username={props.dareData.invited[0].nickname}
                 />
               </View>
               <Text
@@ -139,18 +132,13 @@ const styles = StyleSheet.create({
   blockContainer: {
     borderRadius: 30,
 
+    borderWidth: 1,
+    borderColor: "rgba(0, 0, 0, 0.3)",
     width: "44%",
     aspectRatio: 1,
     marginLeft: "4%",
     marginTop: "4%",
-    //backgroundColor: "rgb(28, 28, 30)",
-    shadowOffset: {
-      width: 6,
-      height: 6,
-    },
-    shadowColor: "grey",
-    shadowRadius: 4,
-    shadowOpacity: 0.6,
+    backgroundColor: "rgb(240, 240, 240)",
   },
   date: {
     zIndex: 1,

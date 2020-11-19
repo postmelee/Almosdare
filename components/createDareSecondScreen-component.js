@@ -41,6 +41,7 @@ export default class CreateDareSecondScreen extends React.Component {
     selectedAddress: "",
     selectedCoord: false,
     selectedMode: "",
+    selectedPlace: "",
     destLat: null,
     destLng: null,
     walkingCoords: false,
@@ -139,10 +140,20 @@ export default class CreateDareSecondScreen extends React.Component {
         }
       );
   }
-
+  getAltitude = () => {
+    const weight = 450000;
+    const { latitude, longitude, destLat, destLng } = this.state;
+    const lat = Math.max(latitude, destLat) - Math.min(latitude, destLat);
+    const lng = Math.max(longitude, destLng) - Math.min(longitude, destLng);
+    const distance = Math.sqrt(Math.pow(lat, 2) + Math.pow(lng, 2));
+    return distance * weight;
+  };
   mergeCoords = (destLat, destLng) => {
     const { latitude, longitude } = this.state;
-
+    this.setState({
+      destLat,
+      destLng,
+    });
     const hasStartAndEnd = latitude !== null && destLat !== null;
 
     if (hasStartAndEnd) {
@@ -221,7 +232,6 @@ export default class CreateDareSecondScreen extends React.Component {
     );
   };
 
-  renderCoords = () => {};
   render() {
     const { time, distance, latitude, longitude, destination } = this.state;
     const coordColors = ["red", "green", "blue"];
@@ -254,24 +264,51 @@ export default class CreateDareSecondScreen extends React.Component {
                   <Text style={styles.headerButton}>Back</Text>
                 </View>
               </TouchableWithoutFeedback>
-              <Text style={{ fontSize: 20 }}>Date</Text>
-
-              <TouchableWithoutFeedback
-                onPress={() => {
-                  this.props.navigation.navigate("Second", {
-                    date: this.state.date,
-                  });
-                }}
-              >
-                <View
-                  style={{
-                    width: 100,
-                    alignItems: "flex-end",
+              <Text style={{ fontSize: 20 }}>Place</Text>
+              {this.state.selectedAddress === "" ? (
+                <TouchableWithoutFeedback
+                  onPress={() => {
+                    alert("Choose a Location");
                   }}
                 >
-                  <Text style={styles.headerButton}>Next</Text>
-                </View>
-              </TouchableWithoutFeedback>
+                  <View
+                    style={{
+                      width: 100,
+                      alignItems: "flex-end",
+                    }}
+                  >
+                    <Text style={[styles.headerButton, { color: "grey" }]}>
+                      Next
+                    </Text>
+                  </View>
+                </TouchableWithoutFeedback>
+              ) : (
+                <TouchableWithoutFeedback
+                  onPress={() => {
+                    this.props.navigation.navigate("HomeView", {
+                      newDareReq: true,
+                      newDareData: {
+                        date: this.props.route.params.date,
+                        place: {
+                          name: this.state.selectedPlace,
+                          latitude: this.state.destLat,
+                          longitude: this.state.longitude,
+                        },
+                        members: this.props.route.params.members,
+                      },
+                    });
+                  }}
+                >
+                  <View
+                    style={{
+                      width: 100,
+                      alignItems: "flex-end",
+                    }}
+                  >
+                    <Text style={styles.headerButton}>Next</Text>
+                  </View>
+                </TouchableWithoutFeedback>
+              )}
             </View>
           </SharedElement>
 
@@ -320,6 +357,8 @@ export default class CreateDareSecondScreen extends React.Component {
               zIndex: 2,
               alignItems: "center",
               justifyContent: "center",
+              borderWidth: 1,
+              borderColor: "rgba(0, 0, 0, 0.1)",
             }}
           >
             <Animated.View
@@ -462,6 +501,7 @@ export default class CreateDareSecondScreen extends React.Component {
                             selectedCoord: false,
                             selectedMode: "",
                             selectedAddress: item.formatted_address,
+                            selectedPlace: item.name,
                             isSearchBarFocused: false,
                           });
                           Animated.timing(this.state.searchBarY, {
@@ -469,7 +509,35 @@ export default class CreateDareSecondScreen extends React.Component {
                             delay: 0,
                             duration: 200,
                             useNativeDriver: false,
-                          }).start();
+                          }).start(() => {
+                            this.map.animateCamera(
+                              {
+                                center: {
+                                  latitude:
+                                    (this.state.destLat + this.state.latitude) /
+                                      2 >
+                                    0
+                                      ? (this.state.destLat +
+                                          this.state.latitude) /
+                                          2 -
+                                        0.0025
+                                      : (this.state.destLat +
+                                          this.state.latitude) /
+                                          2 +
+                                        0.0025,
+                                  longitude:
+                                    (this.state.destLng +
+                                      this.state.longitude) /
+                                    2,
+                                },
+                                pitch: 0,
+                                heading: 0,
+                                altitude: this.getAltitude(),
+                                zoom: 40,
+                              },
+                              { duration: 1000 }
+                            );
+                          });
                           Animated.timing(this.state.popViewY, {
                             toValue: 1,
                             delay: 100,
@@ -512,13 +580,14 @@ export default class CreateDareSecondScreen extends React.Component {
               </View>
             ) : null}
             <MapView
+              showsMyLocationButton={false}
+              showsCompass={false}
               showsUserLocation
-              provider="google"
+              ref={(map) => (this.map = map)}
               style={{
                 flex: 1,
                 width: "100%",
                 alignItems: "center",
-                paddingTop: 5,
               }}
               initialRegion={{
                 latitude,
@@ -527,12 +596,20 @@ export default class CreateDareSecondScreen extends React.Component {
                 longitudeDelta: 0.0421,
               }}
             >
+              {this.state.selectedAddress === "" ? null : (
+                <Marker
+                  coordinate={{
+                    latitude: this.state.destLat,
+                    longitude: this.state.destLng,
+                  }}
+                ></Marker>
+              )}
               {this.state.selectedCoord ? (
                 <MapView.Polyline
                   strokeWidth={2}
                   strokeColor={"blue"}
                   coordinates={this.state.selectedCoord.coords}
-                ></MapView.Polyline>
+                />
               ) : null}
             </MapView>
             <Animated.View
@@ -544,8 +621,8 @@ export default class CreateDareSecondScreen extends React.Component {
                 borderRadius: 10,
                 backgroundColor: "white",
                 bottom: -130,
-                padding: 5,
-                paddingHorizontal: 10,
+                paddingVertical: 6,
+                paddingHorizontal: 11,
                 shadowOpacity: 0.3,
                 shadowRadius: 1,
                 shadowOffset: {
@@ -598,7 +675,7 @@ export default class CreateDareSecondScreen extends React.Component {
                   fontWeight: "500",
                 }}
               >
-                Selected
+                {this.state.selectedPlace}
               </Text>
               <Text
                 style={{
